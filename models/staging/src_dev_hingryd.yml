@@ -1,0 +1,214 @@
+version: 2
+
+sources:
+  - name: raw
+    description: This is a replica of the Adventureworks database used by our client.
+    tables:
+
+      - name: salesorderdetail
+        description: "Individual products associated with a specific sales order"
+        columns:
+          - name: salesorderid
+            description: "Order identification number, PK"
+            tests:
+                - not null
+          -  name: salesorderdetailid
+             description: 'Order detail identification number, PK'
+             tests:
+               - unique
+               - not_null
+          -  name: orderqty
+             description: 'Quantity of product ordered'
+          -  name: productid
+             description: 'Identifition number of the product sold, FK to product.productid'
+             tests:
+                - not_null
+          -  name: unitprice
+             description: 'Selling price per unit'
+          -  name: unitpricediscount
+             description: 'Discount'
+             
+      - name: salesorderheader
+        description: "General sales order information."
+        columns:
+          -  name: salesorderid
+             description: 'Order identification number, PK'
+             tests:
+                - unique
+                - not_null    
+          -  name: orderdate
+             description: 'Dates the sales order was created.'
+             tests:
+                - not_null   
+          - name: status
+            description: 'Order current status. 1 = In process; 2 = Approved; 3 = Backordered; 4 = Rejected; 5 = Shipped; 6 = Cancelled'
+            tests:
+              - not_null
+          - name: customerid
+            description: 'Customer identification number. Foreign key to Customer.BusinessEntityID'
+            tests: 
+              - not_null
+              - unique
+          - name: territoryid
+            description: 'Territory in which the sale was made'
+          - name: shiptoaddressid
+            description: 'Customer shipping address.'
+            tests:  
+              - not_null
+          - name: creditcardid
+            description: 'credit card identification number'
+            tests:
+              - not_null
+          - name: subtotal
+            description: 'Sales subtotal. Computed as SUM(SalesOrderDetail.LineTotal)for the appropriate SalesOrderID'
+            tests:
+              - not_null
+          - name: taxamt
+            description: 'tax amount'
+          - name: freight
+            description: 'shipping cost'
+          - name: totaldue
+            description: 'Total due from customer. Computed as Subtotal + TaxAmt + Freight. Computed: isnull(([SubTotal]+[TaxAmt])+[Freight],(0))'
+            tests:
+              - not_null
+
+      - name: salesorderheadersalesreason
+        description: "Cross-reference table mapping sales orders to sales reason codes."
+        columns:
+          - name: salesorderid
+            description: 'Order identification number, FK  to salesorderheader.orderid'
+            tests:
+              - not_null
+          - name: salesreasonid
+            description: 'Sales reason identification number, FK to salesreason.salesreasonid'
+            tests:
+              - not_null
+
+      - name: salesreason
+        description: 'Customer purchase reasons'
+        columns:
+          - name: salesreasonid
+            description: 'Sales reason identification number, PK'
+            tests:
+              - unique
+              - not_null
+          - name: name
+            description: 'Sales reason description'
+            tests:
+              - not_null
+
+      - name: creditcard
+        description: "Customer credit card information."
+        columns:
+          - name: creditcardid
+            description: 'Identity number of customer credit card, PK'
+            tests:
+              - unique
+              - not_null
+          - name: cardtype
+            description: 'Credit card type name'
+
+      - name: customer
+        description: 'Customer informations'
+        columns:
+          - name: customerid
+            description: 'Customer identity number, PK'
+            tests:
+                - unique
+                - not_null
+          - name: personid
+            description: 'Person identity number, FK to person.personid'
+          - name: territoryid
+            description: 'ID of the territory in which the customer is located. '
+
+      - name: address
+        description: "Street address information for customers, employees, and vendors."
+        columns:
+        - name: addressid
+          description: 'Identity number of entity address, PK'
+          tests:
+           - unique
+           - not_null
+        -  name: city
+           description: 'City name'
+           tests:
+            - not_null
+        -  name: stateprovinceid
+           description: 'State identificatin number, FK to stateprovince.stateprovinveid'
+           tests:
+            - not_null
+
+      - name: stateprovince
+        description: "State and province lookup table."
+        columns:
+          - name: stateprovinceid
+            description: 'Identity number of entity state address, PK'
+            tests:
+              - unique
+              - not_null
+          -  name: name
+             description: 'State or province name'
+             tests:
+              - not_null
+          - name: countryregioncode
+            description: 'Country or region code, FK to countryregion.countryregioncode'
+            tests:
+              - not_null
+      - name: countryregion
+        description: 'ISO standard codes for countries and regions'
+        columns:
+          -  name: countryregioncode
+             description: 'Country or region code, PK'
+             tests:
+               - unique
+               - not_null
+          -  name: name
+             description: 'Country or region name'
+             tests:
+                - not_null
+
+      - name: businessentitycontact
+        description: "Cross-reference table mapping stores, vendors, and employees to people"
+
+      - name: person
+        description: "Human beings involved with AdventureWorks: employees, customer contacts, and vendor contacts."
+        columns:
+          - name: businessentityid
+            description: 'Person identity number, PK'
+            tests:
+              - unique
+              - not_null
+          - name: persontype
+            description: 'Type of person: SC = Store Contact, IN = Individual customer, SP = Sales person, EM = Employee (non-sales), VC = Vendor contact, GC = General contact'
+          - name: firstname
+            description: 'Person first name'
+          - name: middlename
+            description: 'Person middle name'
+          - name: lastname
+            description: 'Person last name'
+            
+      - name: product
+        description: "Products sold or used in the manfacturing of sold products."
+        columns:
+               -  name: productid
+                  description: 'Identifition number of the product sold, PK'
+                  tests:
+                     - unique
+                     - not_null
+               -  name: name
+                  description: 'Name of the product'
+                  tests:
+                     - unique
+               -  name: productsubcategoryid
+                  description: 'Identity number of product subcategory, FK to productsubcategory.productsubcategoryid'
+
+      - name: productsubcategory
+        description: "Product subcategories."
+        columns:
+               -  name: productsubcategoryid
+                  description: 'Identity number of product subcategory, PK'
+                  tests:
+                     - unique
+                     - not_null
+               -  name: name
+                  description: 'Name of product subcategory'
