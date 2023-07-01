@@ -1,0 +1,20 @@
+version: 2
+
+models:
+
+  - name: stateprovince
+    description: "State and province lookup table."
+    columns:
+          - name: stateprovinceid
+            description: 'Identity number of entity state address, PK'
+            tests:
+              - unique
+              - not_null
+          -  name: name
+             description: 'State or province name'
+             tests:
+              - not_null
+          - name: countryregioncode
+            description: 'Country or region code, FK to countryregion.countryregioncode'
+            tests:
+              - not_null
