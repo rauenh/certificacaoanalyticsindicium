@@ -1,0 +1,20 @@
+version: 2
+
+models:
+
+  - name: address
+    description: "Street address information for customers, employees, and vendors."
+    columns:
+        - name: addressid
+          description: 'Identity number of entity address, PK'
+          tests:
+           - unique
+           - not_null
+        -  name: city
+           description: 'City name'
+           tests:
+            - not_null
+        -  name: stateprovinceid
+           description: 'State identificatin number, FK to stateprovince.stateprovinveid'
+           tests:
+            - not_null
