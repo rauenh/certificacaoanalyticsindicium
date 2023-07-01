@@ -1,0 +1,13 @@
+version: 2
+
+models:
+  - name: creditcard
+    description: "Customer credit card information."
+    columns:
+          - name: creditcardid
+            description: 'Identity number of customer credit card, PK'
+            tests:
+              - unique
+              - not_null
+          - name: cardtype
+            description: 'Credit card type name'

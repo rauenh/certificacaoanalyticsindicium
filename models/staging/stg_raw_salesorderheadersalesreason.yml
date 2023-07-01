@@ -1,0 +1,15 @@
+version: 2
+
+models:
+
+  - name: salesorderheadersalesreason
+    description: "Cross-reference table mapping sales orders to sales reason codes."
+    columns:
+          - name: salesorderid
+            description: 'Order identification number, FK  to salesorderheader.orderid'
+            tests:
+              - not_null
+          - name: salesreasonid
+            description: 'Sales reason identification number, FK to salesreason.salesreasonid'
+            tests:
+              - not_null
