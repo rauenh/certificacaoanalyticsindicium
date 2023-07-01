@@ -169,6 +169,16 @@ sources:
 
       - name: businessentitycontact
         description: "Cross-reference table mapping stores, vendors, and employees to people"
+        columns:
+          - name: businessentityid
+            description: 'Person identity number, PK FK'
+            tests:
+              - unique
+              - not_null
+          - name: personid
+            description: 'FK to person.personid'
+            tests:
+              - not_null
 
       - name: person
         description: "Human beings involved with AdventureWorks: employees, customer contacts, and vendor contacts."
