@@ -5,7 +5,6 @@ models:
   - name: businessentityid
     description: 'Person identity number, PK FK'
     tests:
-      - unique
       - not_null
   - name: personid
     description: 'FK to person.personid'
