@@ -8,7 +8,7 @@ models:
           - name: salesorderid
             description: "Order identification number, PK"
             tests:
-                - not null
+                - not_null
           -  name: salesorderdetailid
              description: 'Order detail identification number, PK'
              tests:

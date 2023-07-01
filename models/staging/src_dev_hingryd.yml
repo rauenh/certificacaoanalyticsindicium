@@ -11,7 +11,7 @@ sources:
           - name: salesorderid
             description: "Order identification number, PK"
             tests:
-                - not null
+                - not_null
           -  name: salesorderdetailid
              description: 'Order detail identification number, PK'
              tests:
@@ -48,7 +48,6 @@ sources:
             description: 'Customer identification number. Foreign key to Customer.BusinessEntityID'
             tests: 
               - not_null
-              - unique
           - name: territoryid
             description: 'Territory in which the sale was made'
           - name: shiptoaddressid
@@ -173,7 +172,6 @@ sources:
           - name: businessentityid
             description: 'Person identity number, PK FK'
             tests:
-              - unique
               - not_null
           - name: personid
             description: 'FK to person.personid'

@@ -22,7 +22,6 @@ models:
             description: 'Customer identification number. Foreign key to Customer.BusinessEntityID'
             tests: 
               - not_null
-              - unique
           - name: territoryid
             description: 'Territory in which the sale was made'
           - name: shiptoaddressid
