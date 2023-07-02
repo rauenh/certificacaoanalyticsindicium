@@ -56,6 +56,8 @@ sources:
               - not_null
           - name: creditcardid
             description: 'credit card identification number'
+            tests:
+              - not_null
           - name: subtotal
             description: 'Sales subtotal. Computed as SUM(SalesOrderDetail.LineTotal)for the appropriate SalesOrderID'
             tests:
@@ -174,6 +176,22 @@ sources:
           - name: personid
             description: 'FK to person.personid'
             tests:
+              - not_null
+
+      - name: businessentity
+        description: "Source of the ID that connects vendors, customers, and employees with address and contact information."
+        columns:
+          - name: businessentityid
+            description: 'Person identity number, PK FK'
+            tests:
+              - not_null
+          - name: modifieddate
+            description: 'Date and time the record was modified'
+            tests:
+              - not_null
+          - name: rowguid
+            description: 'uniqueidentifier'
+            tests: 
               - not_null
 
       - name: person
