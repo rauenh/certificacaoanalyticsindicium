@@ -6,12 +6,6 @@ with
             territoryid
         from {{ref('stg_raw_customer')}}
     ),
-    businessentitycontact as (
-        select
-            businessentityid,
-            personid
-        from {{ref('stg_raw_businessentitycontact')}}
-    ),
     person as (
         select
             businessentityid,
@@ -21,11 +15,10 @@ with
             lastname
         from {{ref('stg_raw_person')}}
     ),
-    join_customer as (
+        join_customer as (
         select
             customer.customerid,
             customer.personid,
-            businessentitycontact.businessentityid,
             CASE
                 WHEN person.persontype = 'SC' THEN 'Store Contact'
                 WHEN person.persontype = 'IN' THEN 'Individual Customer'
@@ -37,8 +30,8 @@ with
             person.firstname,
             person.middlename,
             person.lastname
-        from customer
-        left join person on (customer.personid = person.businessentityid)
+        from person
+        left join customer on (customer.customerid = person.customerid)
         order by customer.customerid asc
     )
 select *
