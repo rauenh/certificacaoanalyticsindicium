@@ -1,0 +1,46 @@
+version: 2
+
+models:
+
+  - name: salesorderheader
+    description: "General sales order information."
+    columns:
+          -  name: salesorderid
+             description: 'Order identification number, PK'
+             tests:
+                - unique
+                - not_null    
+          -  name: orderdate
+             description: 'Dates the sales order was created.'
+             tests:
+                - not_null   
+          - name: status
+            description: 'Order current status. 1 = In process; 2 = Approved; 3 = Backordered; 4 = Rejected; 5 = Shipped; 6 = Cancelled'
+            tests:
+              - not_null
+          - name: customerid
+            description: 'Customer identification number. Foreign key to Customer.BusinessEntityID'
+            tests: 
+              - not_null
+          - name: territoryid
+            description: 'Territory in which the sale was made'
+          - name: shiptoaddressid
+            description: 'Customer shipping address.'
+            tests:  
+              - not_null
+          - name: creditcardid
+            description: 'credit card identification number'
+            tests:
+              - not_null
+          - name: subtotal
+            description: 'Sales subtotal. Computed as SUM(SalesOrderDetail.LineTotal)for the appropriate SalesOrderID'
+            tests:
+              - not_null
+          - name: taxamt
+            description: 'tax amount'
+          - name: freight
+            description: 'shipping cost'
+          - name: totaldue
+            description: 'Total due from customer. Computed as Subtotal + TaxAmt + Freight. Computed: isnull(([SubTotal]+[TaxAmt])+[Freight],(0))'
+            tests:
+              - not_null
