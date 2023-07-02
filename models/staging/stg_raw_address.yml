@@ -18,3 +18,7 @@ models:
            description: 'State identificatin number, FK to stateprovince.stateprovinveid'
            tests:
             - not_null
+        - name: rowguid
+          description: 'unique identifier'
+        - name: spatiallocation
+          description: 'geography'
