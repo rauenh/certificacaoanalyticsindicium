@@ -15,10 +15,17 @@ with
             lastname
         from {{ref('stg_raw_person')}}
     ),
+    businessentity as (
+        select
+            businessentityid,
+        from {{ref('stg_raw_businessentity')}}
+    )
+
         join_customer as (
         select
             customer.customerid,
             customer.personid,
+            businessentity.businessentityid
             CASE
                 WHEN person.persontype = 'SC' THEN 'Store Contact'
                 WHEN person.persontype = 'IN' THEN 'Individual Customer'
@@ -31,7 +38,8 @@ with
             person.middlename,
             person.lastname
         from person
-        left join customer on (customer.customerid = person.customerid)
+        left join customer on (customer.personid = person.personid)
+        left join businessentity on (person.businessentityid = businessentity.businessentityid)
         order by customer.customerid asc
     )
 select *
