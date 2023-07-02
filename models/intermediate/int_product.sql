@@ -1,28 +1,15 @@
-with
+with    
 
     product as (
         select
-            productid
-            , product_name
-            , productsubcategoryid
-            from {{source('stg_raw_product')}}
-    )
-     productsubcategory as (
-        select
-            productsubcategoryid
-            , name_subcategory
-            from {{source('stg_raw_productsubcategory')}}
-    ),
-
-        join_product as (
-        select
-            product.productid,
-            product.productsubcategoryid,
-            product.product_name,
-            productsubcategory.name_subcategory
-        from product
-        left join productsubcategoryon (product.productsubcategoryid = productsubcategory.productsubcategoryid)
-        order by product.productid asc
+            productid,
+            product_name,
+            case
+                when productsubcategoryid is null then cast ('0' as int)
+                else productsubcategoryid
+            end as productsubcategoryid,
+        from
+            {{ ref('stg_raw_product') }}
     )
 select *
-from join_product
+from product
