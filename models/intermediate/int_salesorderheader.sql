@@ -1,6 +1,16 @@
 with    
     salesorderheader as (
         select
+              salesorderid
+            , subtotal
+            , taxamt
+            , freight
+            , totaldue
+            , cast(orderdate as datetime) as orderdate
+            , status as status_sales
+            , customerid
+            , shiptoaddressid
+            , territoryid
             case
                 when creditcardid is null then cast ('0' as int)
                 else creditcardid

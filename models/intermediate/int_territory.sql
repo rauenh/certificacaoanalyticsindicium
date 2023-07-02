@@ -21,17 +21,7 @@ with
             , countryregioncode
             from {{ref('stg_raw_stateprovince')}}
     ),
-    countryregion as (
-        select
-            countryregioncode
-            , name as name_country
-            from {{ref('stg_raw_countryregion')}}
-    ),
-    customer as (
-        select
-            customerid
-        from {{ref('stg_raw_customer')}}
-    )
+
     join_territory as (
         select
             salesorderheader.salesorderid
