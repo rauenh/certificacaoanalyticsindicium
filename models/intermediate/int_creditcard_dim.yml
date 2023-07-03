@@ -13,4 +13,13 @@ models:
       - name: cardtype
         description: 'Name of the creditcard'
         tests:
-          - not_null
+          - not_nul
+  - name: salesorderheader
+    description: "General sales order information."
+    columns:
+          -  name: salesorderid
+             description: 'Order identification number, PK'
+          - name: creditcardid
+            description: 'credit card identification number'
+            tests:  
+              - not_null

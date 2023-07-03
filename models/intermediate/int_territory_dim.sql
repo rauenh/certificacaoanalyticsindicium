@@ -5,7 +5,7 @@ with
             , customerid
             , shiptoaddressid
             , territoryid
-        from {{ ref('stg_raw_salesorderheader') }}
+        from {{ ref('int_salesorderheader') }}
     ),
     address as (
         select
@@ -21,27 +21,41 @@ with
             , countryregioncode
             from {{ref('stg_raw_stateprovince')}}
     ),
-
+    salesterritory as (
+        select
+            territoryid
+            , costlastyear
+            , costytd
+            , name_sales_territory
+            , salesytd
+            , saleslastyear
+            , countryregioncode
+            , group
+            from {{ref('stg_raw_salesterritory')}}
+    ),
+    countryregion as (
+        select
+            countryregioncode
+            , name_country
+            from {{source('stg_raw_countryregion')}}
+    )
     join_territory as (
         select
             salesorderheader.salesorderid
-            , customer.customerid
-            , salesorderheader.customerid
             , salesorderheader.shiptoaddressid
             , salesorderheader.territoryid
+            , salesorderheader.customerid
             , address.addressid
-            , address.stateprovinceid
             , address.city
             , stateprovince.stateprovinceid
             , stateprovince.name_state
             , stateprovince.countryregioncode
-            , countryregion.countryregioncode
             , countryregion.name_country
         from salesorderheader
-        left join customer on (salesorderheader.customerid = customer.customerid)
         left join address on (salesorderheader.shiptoaddressid = address.addressid)
-        left join address on ( address.stateprovinceid = stateprovinceid.stateprovinceid)
+        left join salesterritory on ( salesorderheader.territoryid = salesterritory.territoryid)
         left join stateprovince on ( stateprovince.countryregioncode = countryregion.countryregioncode)
+        order by salesorderheader.salesorderid asc
     )
 select *
 from join_territory
