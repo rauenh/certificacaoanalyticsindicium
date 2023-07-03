@@ -1,0 +1,14 @@
+version: 2
+
+
+models:
+  - name: product
+    description: "Product categories."
+    columns:
+      -  name: productid
+         description: 'Identity number of product , PK'
+         tests:
+      -  name: product_name
+         description: 'Name of product '
+      - name: productsubcategoryid
+        description: 'ID of subcategory products'

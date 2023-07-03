@@ -1,0 +1,28 @@
+version: 2
+
+models:
+
+  - name: product
+    description: "Products sold or used in the manfacturing of sold products."
+    columns:
+           -  name: productid
+              description: 'Identifition number of the product sold, PK'
+              tests:
+                 - unique
+                 - not_null
+           -  name: name
+              description: 'Name of the product'
+              tests:
+                 - unique
+           -  name: productsubcategoryid
+              description: 'Identity number of product subcategory, FK to productsubcategory.productsubcategoryid'
+  - name: productsubcategory
+    description: "Product subcategories."
+    columns:
+           -  name: productsubcategoryid
+              description: 'Identity number of product subcategory, PK'
+              tests:
+                 - unique
+                 - not_null
+           -  name: name
+              description: 'Name of product subcategory'

@@ -1,7 +1,17 @@
 with    
     salesorderheader as (
         select
-            case
+              salesorderid
+            , subtotal
+            , taxamt
+            , freight
+            , totaldue
+            , orderdate
+            , status_sales
+            , customerid
+            , shiptoaddressid
+            , territoryid
+            , case
                 when creditcardid is null then cast ('0' as int)
                 else creditcardid
             end as creditcardid,

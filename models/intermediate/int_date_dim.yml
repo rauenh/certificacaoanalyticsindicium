@@ -1,0 +1,13 @@
+version: 2
+
+models:
+
+  - name: salesorderheader
+    description: "General sales order information."
+    columns:
+      -  name: salesorderid
+         description: 'Order identification number, PK'
+      -  name: orderdate
+         description: 'Dates the sales order was created.'
+         tests:
+                - not_null

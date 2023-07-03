@@ -3,6 +3,10 @@ with
     select
       creditcardid
     , cardtype
+    , expmonth
+    , expyear
+    , modifieddate
+    , cardnumber
     from {{ source('raw', 'creditcard') }}
 )
 
