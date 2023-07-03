@@ -17,7 +17,7 @@ with
     stateprovince as (
         select
             stateprovinceid
-            , name as name_state
+            , name_state
             , countryregioncode
             from {{ref('stg_raw_stateprovince')}}
     ),
@@ -30,15 +30,14 @@ with
             , salesytd
             , saleslastyear
             , countryregioncode
-            , group
             from {{ref('stg_raw_salesterritory')}}
     ),
     countryregion as (
         select
             countryregioncode
             , name_country
-            from {{source('stg_raw_countryregion')}}
-    )
+            from {{ref('stg_raw_countryregion')}}
+    ), 
     join_territory as (
         select
             salesorderheader.salesorderid
@@ -53,8 +52,8 @@ with
             , countryregion.name_country
         from salesorderheader
         left join address on (salesorderheader.shiptoaddressid = address.addressid)
-        left join salesterritory on ( salesorderheader.territoryid = salesterritory.territoryid)
-        left join stateprovince on ( stateprovince.countryregioncode = countryregion.countryregioncode)
+        left join stateprovince on (address.stateprovinceid = stateprovince.stateprovinceid)
+        left join countryregion on (stateprovince.countryregioncode = countryregion.countryregioncode)
         order by salesorderheader.salesorderid asc
     )
 select *

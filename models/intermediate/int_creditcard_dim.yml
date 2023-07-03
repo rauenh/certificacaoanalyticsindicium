@@ -13,7 +13,7 @@ models:
       - name: cardtype
         description: 'Name of the creditcard'
         tests:
-          - not_nul
+          - not_null
   - name: salesorderheader
     description: "General sales order information."
     columns:

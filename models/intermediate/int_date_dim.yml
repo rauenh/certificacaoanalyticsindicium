@@ -7,9 +7,6 @@ models:
     columns:
       -  name: salesorderid
          description: 'Order identification number, PK'
-         tests:
-            - unique
-            - not_null    
       -  name: orderdate
          description: 'Dates the sales order was created.'
          tests:

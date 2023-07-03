@@ -8,8 +8,7 @@ with
             , salesytd
             , saleslastyear
             , countryregioncode
-            , group
-            from {{source('raw', 'salesterritory')}}
+        from {{ source('raw', 'salesterritory') }}
     )
 select *
 from salesterritory

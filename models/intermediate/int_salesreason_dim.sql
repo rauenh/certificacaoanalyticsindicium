@@ -4,14 +4,15 @@ with
         select
             salesorderid 
             , salesreasonid 
-        from {{ source('stg_raw_salesorderheadersalesreason') }}
+        from {{ ref('stg_raw_salesorderheadersalesreason') }}
 ),
     salesreason as (
         select
             salesreasonid
             , salesreason_name
-        from {{ source('stg_raw_salesreason') }}
-)
+        from {{ ref('stg_raw_salesreason') }}
+),
+
     join_salesreason as (
         select
             salesorderheadersalesreason.salesorderid

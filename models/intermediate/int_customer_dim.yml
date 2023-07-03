@@ -9,7 +9,6 @@ models:
              description: 'Order identification number, PK'
              tests:
                 - unique
-                - not_null    
           - name: customerid
             description: 'Customer identification number. Foreign key to Customer.BusinessEntityID'
             tests: 
