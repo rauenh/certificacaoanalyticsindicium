@@ -3,54 +3,36 @@ with
         select
             /*PK*/
             salesorderid
+            /* FK*/
+            , shiptoaddressid
+            , creditcardid
+            , customerid
+            , salespersonid
+            , territoryid
             /* Order information for customer*/
             , status
+            , rowguid
+            , modifieddate
         from {{ref('stg_raw_salesorderheader')}}
     ),
-    salesorderdetail as (
+    join_dim_status_sales as (
         select
-            /* Primary Key*/
-            salesorderid
-            , salesorderdetailid					
-            /*Foreign Key */
-            , productid	
-            , specialofferid					
-            /* sales order detail */
-            , carriertrackingnumber
-            , orderqty
-        from {{ref('stg_raw_salesorderdetail')}}
-    )
-    stateprovince as (
-        select
-            /* Primary Key */
-            stateprovinceid
-            /* FK*/
-            , territoryid
-            , stateprovincecode
-            , countryregioncode
-            , name_state_province
-            , rowguid
-        from {{ref('stg_raw_stateprovince')}}
-    ),
-    join_dim_territories as (
-        select
-            {{ dbt_utils.generate_surrogate_key(['salesorderid', 'shiptoaddressid', 'customerid']) }} as dim_territories_sk
+            {{ dbt_utils.generate_surrogate_key(['salesorderid', 'rowguid', 'modifieddate']) }} as dim_status_sales_sk
             , salesorderheader.salesorderid
             , salesorderheader.customerid		
             , salesorderheader.salespersonid	
             , salesorderheader.territoryid	
             , salesorderheader.shiptoaddressid
-            , address.stateprovinceid
-            , address.spatiallocation
-            , stateprovince.countryregioncode
-            , stateprovince.stateprovincecode
-            , address.city
-            , address.postalcode
-            , stateprovince.name_state_province
-            from salesorderheader
-            left join address on (salesorderheader.shiptoaddressid = address.addressid)
-                left join stateprovince on (address.stateprovinceid = stateprovince.stateprovinceid)
-            order by salesorderheader.salesorderid asc
+            , case 
+                when salesorderheader.status = 1 then 'In Process'
+                when salesorderheader.status = 2 then 'Approved'
+                when salesorderheader.status = 3 then 'Backordered'
+                when salesorderheader.status = 4 then 'Rejected'
+                when salesorderheader.status = 5 then 'Shipped'
+                when salesorderheader.status = 6 then 'Cancelled'
+            end as status
+        from salesorderheader
+        order by salesorderheader.salesorderid asc
     )
     select *
-    from join_dim_territories
+    from join_dim_status_sales
