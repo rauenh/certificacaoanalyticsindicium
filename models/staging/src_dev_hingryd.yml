@@ -4,70 +4,109 @@ sources:
   - name: raw
     description: This is a replica of the Adventureworks database used by our client.
     tables:
-
+  # sales schema #
       - name: salesorderdetail
         description: "Individual products associated with a specific sales order"
         columns:
           - name: salesorderid
-            description: "Order identification number, PK"
+            description: 'Identification number of the sales order, PK'
             tests:
-                - not_null
-          -  name: salesorderdetailid
-             description: 'Order detail identification number, PK'
-             tests:
-               - unique
-               - not_null
-          -  name: orderqty
-             description: 'Quantity of product ordered'
-          -  name: productid
-             description: 'Identifition number of the product sold, FK to product.productid'
-             tests:
-                - not_null
-          -  name: unitprice
-             description: 'Selling price per unit'
-          -  name: unitpricediscount
-             description: 'Discount'
+              - unique
+              - not_null
+          - name: salesorderdetailid
+            description: 'Identification number of the sales order detail, PK'
+            tests:
+              - unique
+              - not_null
+          - name: productid
+            description: 'Identification number of the product, FK to product.productid'
+          - name: specialofferid
+            description: 'Identification number of the special offer, FK to specialoffer.specialofferid'
+          - name: carriertrackingnumber
+            description: 'Tracking number of the carrier for the sales order'
+          - name: orderqty
+            description: 'Quantity of the product ordered'
+          - name: unitprice
+            description: 'Unit price of the product'
+          - name: unitpricediscount
+            description: 'Discount applied to the unit price of the product'
+          - name: rowguid
+            description: 'GUID (Globally Unique Identifier) for the sales order detail'
+          - name: modifieddate
+            description: 'Date when the sales order detail was last modified'
+          - name: _airbyte_ab_id
+            description: "identification of sync"
+          - name: _airbyte_emitted_at
+            description: "date and time data started the sync to dw"
+          - name: last_etl_run 
+            description: "date and time the data finished to extract"
+          - name: _airbyte_salesorderdetail_hashid
+            description: "unique identifier os airbyte connection"
              
       - name: salesorderheader
         description: "General sales order information."
         columns:
-          -  name: salesorderid
-             description: 'Order identification number, PK'
-             tests:
-                - unique
-                - not_null    
-          -  name: orderdate
-             description: 'Dates the sales order was created.'
-             tests:
-                - not_null   
-          - name: status
-            description: 'Order current status. 1 = In process; 2 = Approved; 3 = Backordered; 4 = Rejected; 5 = Shipped; 6 = Cancelled'
+          - name: salesorderid
+            description: 'Identification number of the sales order, PK'
             tests:
+              - unique
               - not_null
           - name: customerid
-            description: 'Customer identification number. Foreign key to Customer.BusinessEntityID'
-            tests: 
-              - not_null
+            description: 'Identification number of the customer, FK to customer.customerid'
+          - name: salespersonid
+            description: 'Identification number of the salesperson, FK to salesperson.salespersonid'
           - name: territoryid
-            description: 'Territory in which the sale was made'
+            description: 'Identification number of the territory, FK to territory.territoryid'
+          - name: billtoaddressid
+            description: 'Identification number of the billing address, FK to address.addressid'
           - name: shiptoaddressid
-            description: 'Customer shipping address.'
-            tests:  
-              - not_null
+            description: 'Identification number of the shipping address, FK to address.addressid'
           - name: creditcardid
-            description: 'credit card identification number'
+            description: 'Identification number of the credit card, FK to creditcard.creditcardid'
+          - name: currencyrateid
+            description: 'Identification number of the currency rate, FK to currencyrate.currencyrateid'
+          - name: shipmethodid
+            description: 'Identification number of the shipping method, FK to shipmethod.shipmethodid'
+          - name: status
+            description: 'Status of the sales order'
+          - name: purchaseordernumber
+            description: 'Purchase order number'
+          - name: creditcardapprovalcode
+            description: 'Approval code for the credit card'
+          - name: accountnumber
+            description: 'Account number'
+          - name: onlineorderflag
+            description: 'Flag indicating if the order was placed online'
+          - name: orderdate
+            description: 'Date of the order'
+          - name: shipdate
+            description: 'Date of shipment'
+          - name: duedate
+            description: 'Due date for payment'
           - name: subtotal
-            description: 'Sales subtotal. Computed as SUM(SalesOrderDetail.LineTotal)for the appropriate SalesOrderID'
-            tests:
-              - not_null
+            description: 'Subtotal of the sales order'
           - name: taxamt
-            description: 'tax amount'
+            description: 'Tax amount for the sales order'
           - name: freight
-            description: 'shipping cost'
+            description: 'Freight cost for the sales order'
           - name: totaldue
-            description: 'Total due from customer. Computed as Subtotal + TaxAmt + Freight. Computed: isnull(([SubTotal]+[TaxAmt])+[Freight],(0))'
-            tests:
-              - not_null
+            description: 'Total amount due for the sales order'
+          - name: rowguid
+            description: 'GUID (Globally Unique Identifier) for the sales order'
+          - name: modifieddate
+            description: 'Date when the sales order was last modified'
+          - name: revisionnumber
+            description: 'Revision number of the sales order'
+          - name: comment
+            description: 'Comment for the sales order'
+          - name: _airbyte_ab_id
+            description: "identification of sync"
+          - name: _airbyte_emitted_at
+            description: "date and time data started the sync to dw"
+          - name: last_etl_run 
+            description: "date and time the data finished to extract"
+          - name: _airbyte_salesorderheader_hashid
+            description: "unique identifier os airbyte connection"
 
       - name: salesorderheadersalesreason
         description: "Cross-reference table mapping sales orders to sales reason codes."
@@ -80,19 +119,124 @@ sources:
             description: 'Sales reason identification number, FK to salesreason.salesreasonid'
             tests:
               - not_null
+          - name: modifieddate
+            description: 'date the record was last updated'
+          - name: _airbyte_ab_id
+            description: "identification of sync"
+          - name: _airbyte_emitted_at
+            description: "date and time data started the sync to dw"
+          - name: last_etl_run 
+            description: "date and time the data finished to extract"
+          - name: _airbyte_salesorderheadersalesreason_hashid
+            description: "unique identifier os airbyte connection"
 
       - name: salesreason
         description: 'Customer purchase reasons'
         columns:
           - name: salesreasonid
-            description: 'Sales reason identification number, PK'
+            description: 'Identification number of the sales reason, PK'
             tests:
               - unique
               - not_null
-          - name: name
-            description: 'Sales reason description'
+          - name: name_salesreason
+            description: 'Name of the sales reason (alias)'
+          - name: reasontype
+            description: 'Type of the sales reason'
+          - name: modifieddate
+            description: 'Date when the sales reason was last modified'
+          - name: _airbyte_ab_id
+            description: "identification of sync"
+          - name: _airbyte_emitted_at
+            description: "date and time data started the sync to dw"
+          - name: last_etl_run 
+            description: "date and time the data finished to extract"
+          - name: _airbyte_salesreason_hashid
+            description: "unique identifier os airbyte connection"
+
+      - name: salesperson
+        description: "Salesperson information"
+        columns:
+          - name: businessentityid
+            description: 'Identification number of the salesperson, PK'
             tests:
+              - unique
               - not_null
+          - name: territoryid
+            description: 'Identification number of the territory, FK to salesterritory.territoryid'
+          - name: salesquota
+            description: 'Sales quota for the salesperson'
+          - name: bonus
+            description: 'Bonus amount for the salesperson'
+          - name: commissionpct
+            description: 'Commission percentage for the salesperson'
+          - name: salesytd
+            description: 'Sales amount year-to-date for the salesperson'
+          - name: saleslastyear
+            description: 'Sales amount for the salesperson in the previous year'
+          - name: rowguid
+            description: 'GUID (Globally Unique Identifier) for the salesperson'
+          - name: modifieddate
+            description: 'Date when the salesperson was last modified'
+          - name: _airbyte_ab_id
+            description: 'Airbyte extraction ID for the salesperson'
+          - name: _airbyte_emitted_at
+            description: 'Timestamp when the salesperson was emitted by Airbyte'
+          - name: last_etl_run
+            description: 'Timestamp of the last ETL run for the salesperson'
+          - name: _airbyte_salesperson_hashid
+            description: 'Hashed ID for the salesperson used by Airbyte'
+
+      - name: salespersonquotahistory
+        description: 'Sales performance tracking.'
+        columns:
+          - name: businessentityid
+            description: 'Identification number of the salesperson, PK'
+            tests:
+              - unique
+              - not_null
+          - name: salesquota
+            description: 'Sales quota for the salesperson'
+          - name: quotadate
+            description: 'Date of the sales quota'
+          - name: rowguid
+            description: 'GUID (Globally Unique Identifier) for the salesperson quota history'
+          - name: modifieddate
+            description: 'Date when the salesperson quota history was last modified'
+          - name: _airbyte_ab_id
+            description: 'Airbyte extraction ID for the salesperson quota history'
+          - name: _airbyte_emitted_at
+            description: 'Timestamp when the salesperson quota history was emitted by Airbyte'
+          - name: last_etl_run
+            description: 'Timestamp of the last ETL run for the salesperson quota history'
+          - name: _airbyte_salespersonquotahistory_hashid
+            description: 'Hashed ID for the salesperson quota history used by Airbyte'
+
+      - name: store
+        description: 'Sotres(resellers) from AdventureWorks'
+        columns:
+        - name: businessentityid
+          description: 'Identification number of the store, PK'
+          tests:
+            - unique
+            - not_null
+        - name: salespersonid
+          description: 'Identification number of the salesperson, FK to salesperson.businessentityid'
+        - name: name_store
+          description: 'Name of the store (alias)'
+        - name: demographics
+          description: 'Demographic information of the store'
+        - name: rowguid
+          description: 'GUID (Globally Unique Identifier) for the store'
+        - name: modifieddate
+          description: 'Date when the store was last modified'
+        - name: _airbyte_ab_id
+          description: 'Airbyte extraction ID for the store'
+        - name: _airbyte_emitted_at
+          description: 'Timestamp when the store was emitted by Airbyte'
+        - name: last_etl_run
+          description: 'Timestamp of the last ETL run for the store'
+        - name: _airbyte_store_hashid
+          description: 'Hashed ID for the store used by Airbyte'
 
       - name: creditcard
         description: "Customer credit card information."
@@ -104,6 +248,22 @@ sources:
               - not_null
           - name: cardtype
             description: 'Credit card type name'
+          - name: cardnumber
+            description: 'number of credit card'
+          - name: expmonth
+            description: 'month of card expiration'
+          - name: expyear
+            description: 'year of card expiration'
+          - name: modifieddate
+            description: 'date the record was last updated'
+          - name: _airbyte_ab_id
+            description: "identification of sync"
+          - name: _airbyte_emitted_at
+            description: "date and time data started the sync to dw"
+          - name: last_etl_run 
+            description: "date and time the data finished to extract"
+          - name: _airbyte_creditcard_hashid
+            description: "unique identifier os airbyte connection"
 
       - name: customer
         description: 'Customer informations'
@@ -116,24 +276,264 @@ sources:
           - name: personid
             description: 'Person identity number, FK to person.personid'
           - name: territoryid
-            description: 'ID of the territory in which the customer is located. '
+            description: 'ID of the territory in which the customer is located.'
+          - name: storeid 
+            description: 'Foreign key to Store.BusinessEntityID'
+          - name: modifieddate
+            description: 'date and time the record was last updated'
+          - name: rowguid
+            description: "number uniquely identifying the record. Used to support a merge replication sample"
+          - name: _airbyte_ab_id
+            description: "identification of sync"
+          - name: _airbyte_emitted_at
+            description: "date and time data started the sync to dw"
+          - name: last_etl_run 
+            description: "date and time the data finished to extract"
+          - name: _airbyte_customer_hashid
+            description: "unique identifier os airbyte connection"
 
-      - name: address
-        description: "Street address information for customers, employees, and vendors."
+      - name: salesterritory
+        description: "Sales territory lookup table."
         columns:
-        - name: addressid
-          description: 'Identity number of entity address, PK'
-          tests:
-           - unique
-           - not_null
-        -  name: city
-           description: 'City name'
-           tests:
-            - not_null
-        -  name: stateprovinceid
-           description: 'State identificatin number, FK to stateprovince.stateprovinveid'
-           tests:
-            - not_null
+          - name: territoryid
+            description: 'Identification number of the sales territory, PK'
+            tests:
+              - unique
+              - not_null
+          - name: countryregioncode
+            description: 'Country/region code for the sales territory, FK to country.countryregioncode'
+          - name: name_salesterritory
+            description: 'Name of the sales territory (alias)'
+          - name: group
+            description: 'Group to which the sales territory belongs'
+          - name: salesytd
+            description: 'Sales amount year-to-date for the sales territory'
+          - name: saleslastyear
+            description: 'Sales amount for the sales territory in the previous year'
+          - name: costytd
+            description: 'Cost amount year-to-date for the sales territory'
+          - name: costlastyear
+            description: 'Cost amount for the sales territory in the previous year'
+          - name: modifieddate
+            description: 'Date when the sales territory was last modified'
+          - name: _airbyte_ab_id
+            description: 'Airbyte extraction ID for sales territory'
+          - name: _airbyte_emitted_at
+            description: 'Timestamp when the sales territory was emitted by Airbyte'
+          - name: last_etl_run
+            description: 'Timestamp of the last ETL run for the sales territory'
+          - name: _airbyte_salesterritory_hashid
+            description: 'Hashed ID for the sales territory used by Airbyte'
+
+      - name: specialoffer
+        description: 'Sales discount lookup table'
+        columns:
+          - name: specialofferid
+            description: 'Identification number of the special offer, PK'
+            tests:
+              - unique
+              - not_null
+          - name: description_discount
+            description: 'Description of the special offer (discount)'
+          - name: discountpct
+            description: 'Discount percentage for the special offer'
+          - name: type_discount
+            description: 'Type of the special offer (discount)'
+          - name: category
+            description: 'Category of the special offer'
+          - name: startdate
+            description: 'Start date of the special offer'
+          - name: enddate
+            description: 'End date of the special offer'
+          - name: minqty
+            description: 'Minimum quantity for the special offer'
+          - name: maxqty
+            description: 'Maximum quantity for the special offer'
+          - name: rowguid
+            description: 'GUID (Globally Unique Identifier) for the special offer'
+          - name: modifieddate
+            description: 'Date when the special offer was last modified'
+          - name: _airbyte_ab_id
+            description: 'Airbyte extraction ID for the special offer'
+          - name: _airbyte_emitted_at
+            description: 'Timestamp when the special offer was emitted by Airbyte'
+          - name: last_etl_run
+            description: 'Timestamp of the last ETL run for the special offer'
+          - name: _airbyte_specialoffer_hashid
+            description: 'Hashed ID for the special offer used by Airbyte'
+
+  # production schema# 
+      - name: product
+        description: "Products sold or used in the manfacturing of sold products."
+        columns:
+          - name: productid
+            description: 'Identification number of the product sold, PK'
+            tests:
+              - unique
+              - not_null
+          - name: name
+            description: 'Name of the product'
+            tests:
+              - unique
+          - name: productsubcategoryid
+            description: 'Identity number of product subcategory, FK to productsubcategory.productsubcategoryid'
+          - name: productmodelid
+            description: 'Identity number of the product model, FK to productmodel.productmodelid'
+          - name: productnumber
+            description: 'Product number'
+          - name: name_product
+            description: 'Name of the product (alias)'
+          - name: productline
+            description: 'Product line'
+          - name: color
+            description: 'Color of the product'
+          - name: style
+            description: 'Style of the product'
+          - name: size
+            description: 'Size of the product'
+          - name: sizeunitmeasurecode
+            description: 'Unit of measure code for size'
+          - name: weightunitmeasurecode
+            description: 'Unit of measure code for weight'
+          - name: weight
+            description: 'Weight of the product'
+          - name: listprice
+            description: 'List price of the product'
+          - name: class
+            description: 'Product class'
+          - name: standardcost
+            description: 'Standard cost of the product'
+          - name: daystomanufacture
+            description: 'Number of days to manufacture the product'
+          - name: reorderpoint
+            description: 'Reorder point for the product'
+          - name: safetystocklevel
+            description: 'Safety stock level for the product'
+          - name: makeflag
+            description: 'Make flag indicating if the product is manufactured'
+          - name: finishedgoodsflag
+            description: 'Finished goods flag indicating if the product is a finished good'
+          - name: sellstartdate
+            description: 'Start date for selling the product'
+          - name: sellenddate
+            description: 'End date for selling the product'
+          - name: discontinueddate
+            description: 'Date when the product was discontinued'
+          - name: modifieddate
+            description: 'Date when the product was last modified'
+          - name: rowguid
+            description: 'GUID (Globally Unique Identifier) for the product'
+          - name: _airbyte_ab_id
+            description: "identification of sync"
+          - name: _airbyte_emitted_at
+            description: "date and time data started the sync to dw"
+          - name: last_etl_run 
+            description: "date and time the data finished to extract"
+          - name: _airbyte_product_hashid
+            description: "unique identifier os airbyte connection"
+
+      - name: productcategory
+        description: 'high level product categorization'
+        columns:
+          - name: productcategoryid
+            description: 'Identification number of the product category, PK'
+            tests:
+              - unique
+              - not_null
+          - name: name_productcategory
+            description: 'Name of the product category (alias)'
+          - name: modifieddate
+            description: 'Date when the product category was last modified'
+          - name: rowguid
+            description: 'GUID (Globally Unique Identifier) for the product category'
+          - name: _airbyte_ab_id
+            description: "identification of sync"
+          - name: _airbyte_emitted_at
+            description: "date and time data started the sync to dw"
+          - name: last_etl_run 
+            description: "date and time the data finished to extract"
+          - name: _airbyte_productcategory_hashid
+            description: "unique identifier os airbyte connection"
+
+
+      - name: productsubcategory
+        description: "Product subcategories."
+        columns:
+          -  name: productsubcategoryid
+             description: 'Identity number of product subcategory, PK'
+             tests:
+                - unique
+                - not_null
+          -  name: name_productcategory
+             description: 'Name of product subcategory(alias)'
+          - name: modifieddate
+            description: 'Date when the product was last modified'
+          - name: rowguid
+            description: 'GUID (Globally Unique Identifier) for the product'
+          - name: _airbyte_ab_id
+            description: "identification of sync"
+          - name: _airbyte_emitted_at
+            description: "date and time data started the sync to dw"
+          - name: last_etl_run 
+            description: "date and time the data finished to extract"
+          - name: _airbyte_productsubcategory_hashid
+            description: "unique identifier os airbyte connection"
+
+  #person schema#
+
+      - name: stateprovince
+        description: "State and province lookup table."
+        columns:
+          - name: stateprovinceid
+            description: 'Identity number of entity state address, PK'
+            tests:
+              - unique
+              - not_null
+          - name: territoryid
+            description: "ID of the territory in which the state or province is located. Foreign key to SalesTerritory.SalesTerritoryID."
+          -  name: name
+             description: 'State or province name'
+             tests:
+              - not_null
+          - name: countryregioncode
+            description: 'Country or region code, FK to countryregion.countryregioncode'
+            tests:
+              - not_null
+          - name: isonlystateprovinceflag
+            description: '0 = StateProvinceCode exists. 1 = StateProvinceCode unavailable, using CountryRegionCode.'
+          - name: rowguid
+            description: "number uniquely identifying the record. Used to support a merge replication sample"
+          - name: modifieddate
+            description: 'date and time the record was last updated'
+          - name: _airbyte_ab_id
+            description: "identification of sync"
+          - name: _airbyte_emitted_at
+            description: "date and time data started the sync to dw"
+          - name: last_etl_run 
+            description: "date and time the data finished to extract"
+          - name: _airbyte_stateprovince_hashid
+            description: "unique identifier os airbyte connection"
+
+      - name: countryregion
+        description: 'ISO standard codes for countries and regions'
+        columns:
+          -  name: countryregioncode
+             description: 'Country or region code, PK'
+             tests:
+               - unique
+               - not_null
+          -  name: name
+             description: 'Country or region name'
+             tests:
+                - not_null
+          - name: _airbyte_ab_id
+            description: "identification of sync"
+          - name: _airbyte_emitted_at
+            description: "date and time data started the sync to dw"
+          - name: last_etl_run 
+            description: "date and time the data finished to extract"
+          - name: _airbyte_countryregion_hashid
+            description: "unique identifier os airbyte connection"
 
       - name: businessentityaddress
         description: "Cross-reference table mapping customers, vendors, and employees to their addresses."
@@ -148,53 +548,14 @@ sources:
             description: "Primary key. Foreign key to AddressType.AddressTypeID"
           - name: addressid
             description: Primary key. Foreign key to Address.AddressID
-
-      - name: salesterritory
-        description: "Sales territory lookup table."
-        columns:
-          - name: territoryid
-            description: "Primary key for SalesTerritory records"
-          - name: costlastyear
-            description: "Business costs in the territory the previous year"
-          - name: costytd
-            description: "Business costs in the territory year to date"
-          - name: name
-            description: "Sales territory description"
-          - name: salesytd
-            description: "Sales in the territory year to date"
-          - name: saleslastyear
-            description: "Sales in the territory the previous year."
-          - name: countryregioncode
-            description: "ISO standard country or region code. Foreign key to CountryRegion.CountryRegionCode. "
-
-      - name: stateprovince
-        description: "State and province lookup table."
-        columns:
-          - name: stateprovinceid
-            description: 'Identity number of entity state address, PK'
-            tests:
-              - unique
-              - not_null
-          -  name: name
-             description: 'State or province name'
-             tests:
-              - not_null
-          - name: countryregioncode
-            description: 'Country or region code, FK to countryregion.countryregioncode'
-            tests:
-              - not_null
-      - name: countryregion
-        description: 'ISO standard codes for countries and regions'
-        columns:
-          -  name: countryregioncode
-             description: 'Country or region code, PK'
-             tests:
-               - unique
-               - not_null
-          -  name: name
-             description: 'Country or region name'
-             tests:
-                - not_null
+          - name: _airbyte_ab_id
+            description: "identification of sync"
+          - name: _airbyte_emitted_at
+            description: "date and time data started the sync to dw"
+          - name: last_etl_run 
+            description: "date and time the data finished to extract"
+          - name: _airbyte_businessentityaddress_hashid
+            description: "unique identifier of airbyte connection"
 
       - name: businessentitycontact
         description: "Cross-reference table mapping stores, vendors, and employees to people"
@@ -207,6 +568,18 @@ sources:
             description: 'FK to person.personid'
             tests:
               - not_null
+          - name: rowguid
+            description: 'uniqueidentifier'
+            tests: 
+              - not_null
+          - name: _airbyte_ab_id
+            description: "identification of sync"
+          - name: _airbyte_emitted_at
+            description: "date and time data started the sync to dw"
+          - name: last_etl_run 
+            description: "date and time the data finished to extract"
+          - name: _airbyte_businessentitycontact_hashid
+            description: "unique identifier os airbyte connection"
 
       - name: businessentity
         description: "Source of the ID that connects vendors, customers, and employees with address and contact information."
@@ -223,6 +596,14 @@ sources:
             description: 'uniqueidentifier'
             tests: 
               - not_null
+          - name: _airbyte_ab_id
+            description: "identification of sync"
+          - name: _airbyte_emitted_at
+            description: "date and time data started the sync to dw"
+          - name: last_etl_run 
+            description: "date and time the data finished to extract"
+          - name: _airbyte_businessentity_hashid
+            description: "unique identifier os airbyte connection"
 
       - name: person
         description: "Human beings involved with AdventureWorks: employees, customer contacts, and vendor contacts."
@@ -240,29 +621,62 @@ sources:
             description: 'Person middle name'
           - name: lastname
             description: 'Person last name'
-            
-      - name: product
-        description: "Products sold or used in the manfacturing of sold products."
-        columns:
-               -  name: productid
-                  description: 'Identifition number of the product sold, PK'
-                  tests:
-                     - unique
-                     - not_null
-               -  name: name
-                  description: 'Name of the product'
-                  tests:
-                     - unique
-               -  name: productsubcategoryid
-                  description: 'Identity number of product subcategory, FK to productsubcategory.productsubcategoryid'
+          - name: namestyle
+            description: 'Data in firstname and lastname are stored in western or eastern style. 0 western, 1 eastern. default 0'
+          - name: tittle
+            description: 'a courtesy tittle. Mr. Ms.'
+          - name: suffix
+            description: 'Surname suffix. Jr. Sr.'
+          - name: additionalcontactinfo
+            description: 'additional contect information about the person stored in xml format'
+          - name: demographics
+            description: 'Personal information such as hobbies, and income collected from online shoppers. Used for sales analysis.'
+          - name: emailpromotion
+            description: '0 = Contact does not wish to receive e-mail promotions, 1 = Contact does wish to receive e-mail promotions from AdventureWorks, 2 = Contact does wish to receive e-mail promotions from AdventureWorks and selected partners. Default: 0'
+          - name: rowguid
+            description: 'number to identify the record'
+          - name: _airbyte_ab_id
+            description: "identification of sync"
+          - name: _airbyte_emitted_at
+            description: "date and time data started the sync to dw"
+          - name: last_etl_run 
+            description: "date and time the data finished to extract"
+          - name: _airbyte_person_hashid
+            description: "unique identifier os airbyte connection"
 
-      - name: productsubcategory
-        description: "Product subcategories."
+      - name: address
+        description: "Street address information for customers, employees, and vendors."
         columns:
-               -  name: productsubcategoryid
-                  description: 'Identity number of product subcategory, PK'
-                  tests:
-                     - unique
-                     - not_null
-               -  name: name
-                  description: 'Name of product subcategory'
+          - name: addressid
+            description: 'Identity number of entity address, PK'
+            tests:
+            - unique
+            - not_null
+          - name: stateprovinceid
+            description: 'State identificatin number, FK to stateprovince.stateprovinveid'
+            tests:
+              - not_null
+          - name: city
+            description: 'City name'
+            tests:
+              - not_null
+          - name: postalcode
+            description: "Postal code for the street address."
+          - name: addressline1
+            description: "First street address line."
+          - name: addressline2
+            description: "Second street address line."
+          - name: modifieddate
+            description: "Date and time the record was last updated."
+          - name: spatiallocation
+            description: "Latitude and longitude of this address."
+          - name: rowguid
+            description: "number uniquely identifying the record. Used to support a merge replication sample"
+          - name: _airbyte_ab_id
+            description: "identification of sync"
+          - name: _airbyte_emitted_at
+            description: "date and time data started the sync to dw"
+          - name: last_etl_run 
+            description: "date and time the data finished to extract"
+          - name: _airbyte_address_hashid
+            description: "unique identifier os airbyte connection"

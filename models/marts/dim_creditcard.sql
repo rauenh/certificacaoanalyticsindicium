@@ -1,21 +1,35 @@
 with
+    salesorderheader as (
+        select
+            /*PK*/
+            salesorderid
+            /*FK*/
+            , customerid		
+            , salespersonid	
+            , creditcardid				
+            /*Other informations*/      
+            , rowguid					
+        from {{ref('stg_raw_salesorderheader')}}
+    ),
     creditcard as (
-        select *
-        from {{ ref('int_creditcard_dim') }}
-    ),
-    remove_duplicates as (
         select
-            *,
-            row_number() over (partition by  creditcardid order by creditcardid) as remove_duplicates_index,
-        from creditcard
+            /* Primary Key*/
+            creditcardid
+            /* CC Information */
+            , cardtype
+        from {{ref('stg_raw_creditcard')}}
     ),
-    creditcard_sk as (
+    join_dim_creditcard as (
         select
-            MD5(cast(creditcardid as string)) as creditcard_sk,
-            salesorderid,
-            cardtype,
-        from remove_duplicates
-        where remove_duplicates_index = 1
+            {{ dbt_utils.generate_surrogate_key(['salesorderid', 'salesorderheader.creditcardid', 'rowguid']) }} as dim_creditcard_sk
+            , salesorderheader.salesorderid
+            , salesorderheader.customerid
+            , salesorderheader.salespersonid
+            , COALESCE(salesorderheader.creditcardid, 0) as creditcardid
+            , COALESCE(creditcard.cardtype, 'not informed') as cardtype
+            from salesorderheader
+            left join creditcard on (salesorderheader.creditcardid = creditcard.creditcardid)
+            order by salesorderheader.salesorderid asc
     )
-select *
-from creditcard_sk
+    select *
+    from join_dim_creditcard
