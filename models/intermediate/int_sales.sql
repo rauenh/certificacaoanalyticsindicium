@@ -56,7 +56,9 @@ with
             /*FK from salesorderheader*/
             , salesorderheader.customerid
             , salesorderheader.shiptoaddressid
-            , salesorderheader.creditcardid				
+            , salesorderheader.territoryid
+            , salesorderheader.creditcardid		
+            , salesorderheader.salespersonid		
             /*Order pricing*/
             , salesorderheader.subtotal
             , salesorderheader.taxamt					

@@ -63,7 +63,7 @@ with
 	        , int_sales.net_value
         from {{ref('int_sales')}} as int_sales
         left join dim_client on (int_sales.customerid = dim_client.customerid)
-        left join dim_territories on (int_sales.shiptoaddressid = dim_territories.territoryid)
+        left join dim_territories on (int_sales.territoryid = dim_territories.territoryid)
         left join dim_creditcard on (int_sales.creditcardid = dim_creditcard.creditcardid)
         left join dim_status_sales on (int_sales.salesorderid = dim_status_sales.salesorderid)
         left join dim_products on (int_sales.productid = dim_products.productid)

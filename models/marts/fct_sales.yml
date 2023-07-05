@@ -4,6 +4,13 @@ models:
   - name: fct_sales
     description: Fact table containing sales information.
     columns:
+      - name: int_sales_fk
+        description: Foreign key referencing the internal sales table.
+        tests:
+          - relationships:
+              to: ref('int_sales')
+              field: int_sales_sk
+
       - name: salesorderid
         description: Unique identifier for each row on the fact table.
         tests:
@@ -13,7 +20,7 @@ models:
         description: Foreign key referencing the client dimension table.
         tests:
           - relationships:
-              to: ref('dim_clients')
+              to: ref('dim_client')
               field: dim_client_sk
 
       - name: dim_territories_fk
@@ -27,19 +34,19 @@ models:
         description: Foreign key referencing the credit card dimension table.
         tests:
           - relationships:
-              to: ref('dim_creditcards')
-              field: dim_credit_card_sk
+              to: ref('dim_creditcard')
+              field: dim_creditcard_sk
 
       - name: dim_status_sales_fk
         description: Foreign key referencing the sales status dimension table.
         tests:
           - relationships:
-              to: ref('dim_sales_status')
+              to: ref('dim_status_sales')
               field: dim_status_sales_sk
 
       - name: subtotal
         description: Subtotal of the sales order.
-      
+
       - name: taxamt
         description: Tax amount for the sales order.
 
