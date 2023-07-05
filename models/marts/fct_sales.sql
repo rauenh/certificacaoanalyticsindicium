@@ -36,16 +36,16 @@ with
             , dim_territories.dim_territories_sk as dim_territories_fk	
             , dim_creditcard.dim_creditcard_sk as dim_creditcard_fk				
             , dim_status_sales.dim_status_sales_sk as dim_status_sales_fk
-            /*Order pricing*/
+            /*Order pricing
             , salesorderheader.subtotal
             , salesorderheader.taxamt					
             , salesorderheader.freight		
-            , salesorderheader.totaldue
+            , salesorderheader.totaldue*/
             /*Business Rule*/
-            , salesorderheader.taxamt/(count(salesorderheader.taxamt) over (partition by salesorderheader.salesorderid)) as tax_per_order
-            , salesorderheader.freight/(count(salesorderheader.freight) over (partition by salesorderheader.salesorderid)) as freight_per_order
-            , salesorderheader.totaldue/(count(salesorderheader.totaldue) over (partition by salesorderheader.salesorderid)) as totaldue_per_order
-	        , cast(salesorderheader.orderdate as timestamp) as orderdate			
+            , salesorderheader.tax_per_order
+            , salesorderheader.freight_per_order
+            , salesorderheader.totaldue_per_order
+            , salesorderheader.orderdate
 
         from {{ref('stg_raw_salesorderheader')}} as salesorderheader
         left join dim_client on (salesorderheader.customerid = dim_client.customerid)
@@ -62,14 +62,13 @@ with
             /*Foreign Key */
             , dim_products.dim_product_sk as dim_product_fk
             , salesorderdetail.specialofferid					
-            /* sales order detail */
-            , salesorderdetail.carriertrackingnumber
+            /* sales order detail 
             , salesorderdetail.orderqty
             , salesorderdetail.unitprice
-            , salesorderdetail.unitpricediscount
+            , salesorderdetail.unitpricediscount*/
             /*Business Rule*/
-            , (salesorderdetail.unitprice * salesorderdetail.orderqty) as gross_value
-	        , (salesorderdetail.unitprice * salesorderdetail.orderqty) * (1-salesorderdetail.unitpricediscount) as net_value
+            , salesorderdetail.gross_value
+	        , salesorderdetail.net_value
         from {{ref('stg_raw_salesorderdetail')}} as salesorderdetail
         left join dim_products on (salesorderdetail.productid = dim_products.productid)
         order by salesorderdetail.salesorderid asc
@@ -84,11 +83,11 @@ with
             , salesorderheader_with_sk.dim_territories_fk	
             , salesorderheader_with_sk.dim_creditcard_fk				
             , salesorderheader_with_sk.dim_status_sales_fk
-            /*Order pricing*/
+            /*Order pricing
             , salesorderheader_with_sk.subtotal
             , salesorderheader_with_sk.taxamt					
             , salesorderheader_with_sk.freight		
-            , salesorderheader_with_sk.totaldue			
+            , salesorderheader_with_sk.totaldue*/	
             /* Business rules*/
             , salesorderheader_with_sk.tax_per_order
             , salesorderheader_with_sk.freight_per_order
@@ -97,10 +96,10 @@ with
             /*Foreign Key from salesorderdetail */
             , salesorderdetail_with_sk.dim_product_fk
             , salesorderdetail_with_sk.specialofferid					
-            /* sales order detail */
+            /* sales order detail 
             , salesorderdetail_with_sk.orderqty
             , salesorderdetail_with_sk.unitprice
-            , salesorderdetail_with_sk.unitpricediscount
+            , salesorderdetail_with_sk.unitpricediscount*/
             /*Business Rule*/
             , salesorderdetail_with_sk.gross_value
 	        , salesorderdetail_with_sk.net_value
