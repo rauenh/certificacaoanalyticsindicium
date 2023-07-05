@@ -26,6 +26,13 @@ with
             from salesorderheadersalesreason
             left join salesreason on (salesorderheadersalesreason.salesreasonid = salesreason.salesreasonid)
             order by salesorderheadersalesreason.salesorderid asc
+    ),
+    join_dim_salesreason_remove_duplicates as (
+        select
+            *,
+            row_number() over (partition by salesorderid order by salesorderid) as remove_duplicates_index,
+        from join_dim_salesreason
     )
     select *
-    from join_dim_salesreason
+    from join_dim_salesreason_remove_duplicates
+    where remove_duplicates_index = 1 

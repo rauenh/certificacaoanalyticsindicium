@@ -53,9 +53,19 @@ with
             from customer
             left join person on (customer.personid = person.businessentityid)
             left join store on (customer.storeid = store.businessentityid)
+            where customer.personid is not null
             order by customer.customerid asc
+    ),
+    join_dim_client_remove_duplicates as (
+        select
+            *,
+            row_number() over (partition by customerid order by customerid) as remove_duplicates_index,
+        from join_dim_client
     )
     select *
+    from join_dim_client_remove_duplicates
+    where remove_duplicates_index = 1 
+    /*select *
     from join_dim_client
-    where personid is not null
+    where personid is not null*/
 

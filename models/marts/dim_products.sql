@@ -29,7 +29,14 @@ with
             from product
             left join productsubcategory on (product.productsubcategoryid = productsubcategory.productsubcategoryid)
             order by product.productid asc
+    ),
+    join_dim_product_remove_duplicates as (
+        select
+            *,
+            row_number() over (partition by productid order by productid) as remove_duplicates_index,
+        from join_dim_product
     )
     select *
-    from join_dim_product
+    from join_dim_product_remove_duplicates
+    where remove_duplicates_index = 1 
 

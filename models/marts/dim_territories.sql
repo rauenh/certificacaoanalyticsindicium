@@ -53,6 +53,13 @@ with
             left join address on (salesorderheader.shiptoaddressid = address.addressid)
                 left join stateprovince on (address.stateprovinceid = stateprovince.stateprovinceid)
             order by salesorderheader.salesorderid asc
+    ),
+    join_dim_territories_remove_duplicates as (
+        select
+            *,
+            row_number() over (partition by salesorderid order by salesorderid) as remove_duplicates_index,
+        from join_dim_territories
     )
     select *
-    from join_dim_territories
+    from join_dim_territories_remove_duplicates
+    where remove_duplicates_index = 1 

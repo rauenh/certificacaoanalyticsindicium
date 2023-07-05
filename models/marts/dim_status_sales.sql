@@ -33,6 +33,13 @@ with
             end as status
         from salesorderheader
         order by salesorderheader.salesorderid asc
+    ),
+    join_dim_status_sales_remove_duplicates as (
+        select
+            *,
+            row_number() over (partition by salesorderid order by salesorderid) as remove_duplicates_index,
+        from join_dim_status_sales
     )
     select *
-    from join_dim_status_sales
+    from join_dim_status_sales_remove_duplicates
+    where remove_duplicates_index = 1 

@@ -30,6 +30,13 @@ with
             from salesorderheader
             left join creditcard on (salesorderheader.creditcardid = creditcard.creditcardid)
             order by salesorderheader.salesorderid asc
+    ),
+    join_dim_creditcard_remove_duplicates as (
+        select
+            *,
+            row_number() over (partition by salesorderid order by salesorderid) as remove_duplicates_index,
+        from join_dim_creditcard
     )
     select *
-    from join_dim_creditcard
+    from join_dim_creditcard_remove_duplicates
+    where remove_duplicates_index = 1
