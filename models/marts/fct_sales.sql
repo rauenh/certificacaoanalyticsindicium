@@ -40,7 +40,12 @@ with
             , salesorderheader.subtotal
             , salesorderheader.taxamt					
             , salesorderheader.freight		
-            , salesorderheader.totaldue					
+            , salesorderheader.totaldue
+            /*Business Rule*/
+            , salesorderheader.taxamt/(count(salesorderheader.taxamt) over (partition by salesorderheader.salesorderid)) as tax_per_order
+            , salesorderheader.freight/(count(salesorderheader.freight) over (partition by salesorderheader.salesorderid)) as freight_per_order
+            , salesorderheader.totaldue/(count(salesorderheader.totaldue) over (partition by salesorderheader.salesorderid)) as totaldue_per_order
+	        , cast(salesorderheader.orderdate as timestamp) as orderdate			
 
         from {{ref('stg_raw_salesorderheader')}} as salesorderheader
         left join dim_client on (salesorderheader.customerid = dim_client.customerid)
@@ -61,6 +66,9 @@ with
             , salesorderdetail.orderqty
             , salesorderdetail.unitprice
             , salesorderdetail.unitpricediscount
+            /*Business Rule*/
+            , (salesorderdetail.unitprice * salesorderdetail.orderqty) as gross_value
+	        , (salesorderdetail.unitprice * salesorderdetail.orderqty) * (1-salesorderdetail.unitpricediscount) as net_value
         from {{ref('stg_raw_salesorderdetail')}} as salesorderdetail
         left join dim_products on (salesorderdetail.productid = dim_products.productid)
     ),
@@ -78,15 +86,23 @@ with
             , salesorderheader_with_sk.taxamt					
             , salesorderheader_with_sk.freight		
             , salesorderheader_with_sk.totaldue			
+            /* Business rules*/
+            , salesorderheader_with_sk.tax_per_order
+            , salesorderheader_with_sk.freight_per_order
+            , salesorderheader_with_sk.totaldue_per_order
+	        , salesorderheader_with_sk.orderdate			
             /*Foreign Key from salesorderdetail */
             , salesorderdetail_with_sk.dim_product_fk
             , salesorderdetail_with_sk.specialofferid					
             /* sales order detail */
             , salesorderdetail_with_sk.orderqty
             , salesorderdetail_with_sk.unitprice
-            , salesorderdetail_with_sk.unitpricediscount	
-            from salesorderheader_with_sk
-            left join salesorderdetail_with_sk on (salesorderheader_with_sk.salesorderid = salesorderdetail_with_sk.salesorderid)
+            , salesorderdetail_with_sk.unitpricediscount
+            /*Business Rule*/
+            , salesorderdetail_with_sk.gross_value
+	        , salesorderdetail_with_sk.net_value
+        from salesorderheader_with_sk
+        left join salesorderdetail_with_sk on (salesorderheader_with_sk.salesorderid = salesorderdetail_with_sk.salesorderid)
     )
 select *
 from join_salesorderheader_salesorderdetail_with_sk

@@ -49,6 +49,18 @@ models:
       - name: totaldue
         description: Total amount due for the sales order.
 
+      - name: tax_per_order
+        description: Tax amount per order.
+
+      - name: freight_per_order
+        description: Freight amount per order.
+
+      - name: totaldue_per_order
+        description: Total due amount per order.
+
+      - name: orderdate
+        description: Date of the sales order.
+
       - name: dim_product_fk
         description: Foreign key referencing the product dimension table.
         tests:
@@ -67,3 +79,9 @@ models:
 
       - name: unitpricediscount
         description: Discount for the unit price in the sales order.
+
+      - name: gross_value
+        description: Gross value of the sales order detail.
+
+      - name: net_value
+        description: Net value of the sales order detail.
