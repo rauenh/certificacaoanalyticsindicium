@@ -72,7 +72,7 @@ with
 	        , (salesorderdetail.unitprice * salesorderdetail.orderqty) * (1-salesorderdetail.unitpricediscount) as net_value
         from {{ref('stg_raw_salesorderdetail')}} as salesorderdetail
         left join dim_products on (salesorderdetail.productid = dim_products.productid)
-        order by salesordetail.salesorderid asc
+        order by salesorderdetail.salesorderid asc
 
     ),
     join_salesorderheader_salesorderdetail_with_sk as (
@@ -117,4 +117,5 @@ with
     )
 select *
 from join_salesorderheader_salesorderdetail_with_sk_remove_duplicates
+where remove_duplicates_index = 1 
 
