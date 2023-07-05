@@ -26,10 +26,6 @@ with
             , taxamt					
             , freight		
             , totaldue					
-            /*Business Rule*/
-            , (salesorderheader.taxamt/ count(*) over (partition by salesorderheader.salesorderid)) as tax_per_order
-            , (salesorderheader.freight/ count(*) over (partition by salesorderheader.salesorderid)) as freight_per_order
-            , (salesorderheader.totaldue/ count(*) over (partition by salesorderheader.salesorderid)) as totaldue_per_order
 
             /*Other informations*/      
             , rowguid					

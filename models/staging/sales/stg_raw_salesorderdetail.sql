@@ -14,9 +14,6 @@ with
             , unitpricediscount
             , rowguid
             , modifieddate
-            /*Business rule*/
-            , (salesorderdetail.unitprice * salesorderdetail.orderqty) as gross_value
-	        , ((salesorderdetail.unitprice * salesorderdetail.orderqty) * (1-salesorderdetail.unitpricediscount)) as net_value
             /* airbyte extraction */
             , _airbyte_ab_id
             , _airbyte_emitted_at 
