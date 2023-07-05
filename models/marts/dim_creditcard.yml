@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: dim_creditcard
+    description: Dimension table containing credit card information.
+    columns:
+      - name: dim_creditcard_sk
+        description: Surrogate key generated using salesorderid, creditcardid, and rowguid.
+        tests:
+          - not_null
+          - unique
+
+      - name: salesorderid
+        description: Sales order identifier.
+
+      - name: customerid
+        description: Customer identifier.
+
+      - name: salespersonid
+        description: Salesperson identifier.
+
+      - name: creditcardid
+        description: Credit card identifier. Defaulted to 0 if null.
+
+      - name: cardtype
+        description: Type of credit card. Defaulted to 'not informed' if null.

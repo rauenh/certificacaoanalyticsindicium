@@ -1,0 +1,47 @@
+version: 2
+
+models:
+  - name: dim_territories
+    description: Dimension table containing territories information.
+    columns:
+      - name: dim_territories_sk
+        description: Surrogate key generated using salesorderid, shiptoaddressid, and customerid.
+        tests:
+          - not_null
+          - unique
+
+      - name: salesorderid
+        description: Sales order identifier.
+
+      - name: customerid
+        description: Customer identifier.
+
+      - name: salespersonid
+        description: Salesperson identifier.
+
+      - name: territoryid
+        description: Territory identifier.
+
+      - name: shiptoaddressid
+        description: Ship-to address identifier.
+
+      - name: stateprovinceid
+        description: State/Province identifier.
+
+      - name: spatiallocation
+        description: Spatial location of the address.
+
+      - name: countryregioncode
+        description: Country/Region code.
+
+      - name: stateprovincecode
+        description: State/Province code.
+
+      - name: city
+        description: City of the address.
+
+      - name: postalcode
+        description: Postal code of the address.
+
+      - name: name_state_province
+        description: Name of the state/province.

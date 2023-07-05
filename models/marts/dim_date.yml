@@ -1,0 +1,27 @@
+version: 2
+
+models:
+
+  - name: dim_dates
+    description: This table contains information about the dates that events occur for all source.
+    columns:
+      - name: metric_date
+        description: Single date record.
+        tests:
+          - not_null
+          - unique
+
+      - name: day
+        description: Day of metric_date.
+
+      - name: month
+        description: Month of metric_date.
+
+      - name: year
+        description: Year of metric_date.
+
+      - name: quarter
+        description: Quarter of metric_date.
+
+      - name: fullmonth
+        description: Full name of the month of the year.

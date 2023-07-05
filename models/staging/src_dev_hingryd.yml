@@ -11,7 +11,6 @@ sources:
           - name: salesorderid
             description: 'Identification number of the sales order, PK'
             tests:
-              - unique
               - not_null
           - name: salesorderdetailid
             description: 'Identification number of the sales order detail, PK'
@@ -192,7 +191,6 @@ sources:
           - name: businessentityid
             description: 'Identification number of the salesperson, PK'
             tests:
-              - unique
               - not_null
           - name: salesquota
             description: 'Sales quota for the salesperson'

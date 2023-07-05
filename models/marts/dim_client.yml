@@ -1,0 +1,44 @@
+version: 2
+
+models:
+  - name: dim_clients
+    description: Dimension table containing client information.
+    columns:
+      - name: dim_client_sk
+        description: Surrogate key generated using customerid, personid, and rowguid.
+        tests:
+          - not_null
+          - unique
+
+      - name: customerid
+        description: Customer identifier.
+
+      - name: personid
+        description: Person identifier.
+
+      - name: storeid
+        description: Store identifier. Defaulted to 0 if null.
+
+      - name: name_store
+        description: Name of the store. Defaulted to 'not informed' if null.
+
+      - name: territoryid
+        description: Territory identifier.
+
+      - name: persontype
+        description: 'Type of person:
+          - SC for Store Contact
+          - IN for Individual Customer
+          - SP for Sales Person
+          - EM for Employee
+          - VC for Vendor
+          - GC for General Contact'
+
+      - name: firstname
+        description: First name of the person.
+
+      - name: lastname
+        description: Last name of the person.
+
+      - name: demographics
+        description: Demographic information of the person.

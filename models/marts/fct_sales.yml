@@ -1,0 +1,69 @@
+version: 2
+
+models:
+  - name: fct_sales
+    description: Fact table containing sales information.
+    columns:
+      - name: salesorderid
+        description: Unique identifier for each row on the fact table.
+        tests:
+          - not_null
+
+      - name: dim_client_fk
+        description: Foreign key referencing the client dimension table.
+        tests:
+          - relationships:
+              to: ref('dim_clients')
+              field: dim_client_sk
+
+      - name: dim_territories_fk
+        description: Foreign key referencing the territories dimension table.
+        tests:
+          - relationships:
+              to: ref('dim_territories')
+              field: dim_territories_sk
+
+      - name: dim_creditcard_fk
+        description: Foreign key referencing the credit card dimension table.
+        tests:
+          - relationships:
+              to: ref('dim_creditcards')
+              field: dim_credit_card_sk
+
+      - name: dim_status_sales_fk
+        description: Foreign key referencing the sales status dimension table.
+        tests:
+          - relationships:
+              to: ref('dim_sales_status')
+              field: dim_status_sales_sk
+
+      - name: subtotal
+        description: Subtotal of the sales order.
+      
+      - name: taxamt
+        description: Tax amount for the sales order.
+
+      - name: freight
+        description: Freight amount for the sales order.
+
+      - name: totaldue
+        description: Total amount due for the sales order.
+
+      - name: dim_product_fk
+        description: Foreign key referencing the product dimension table.
+        tests:
+          - relationships:
+              to: ref('dim_products')
+              field: dim_product_sk
+
+      - name: specialofferid
+        description: Identifier for special offers applied to the sales order.
+
+      - name: orderqty
+        description: Quantity for each product in the sales order.
+
+      - name: unitprice
+        description: Unit price of the product in the sales order.
+
+      - name: unitpricediscount
+        description: Discount for the unit price in the sales order.

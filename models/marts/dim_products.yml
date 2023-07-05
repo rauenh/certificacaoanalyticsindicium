@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: dim_products
+    description: Dimension table containing product information.
+    columns:
+      - name: dim_product_sk
+        description: Surrogate key generated using productid, productsubcategoryid, and rowguid.
+        tests:
+          - not_null
+          - unique
+
+      - name: productid
+        description: Product identifier.
+
+      - name: productsubcategoryid
+        description: Product subcategory identifier. Defaulted to 0 if null.
+
+      - name: name_product
+        description: Name of the product.
+
+      - name: name_productsubcategory
+        description: Name of the product subcategory. Defaulted to 'not informed' if null.

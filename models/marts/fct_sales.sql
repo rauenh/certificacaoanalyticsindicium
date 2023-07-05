@@ -44,7 +44,7 @@ with
 
         from {{ref('stg_raw_salesorderheader')}} as salesorderheader
         left join dim_client on (salesorderheader.customerid = dim_client.customerid)
-        left join dim_territories on (salesorderheader.shiptoaddressid = dim_territories.shiptoaddressid)
+        left join dim_territories on (salesorderheader.territoryid = dim_territories.territoryid)
         left join dim_creditcard on (salesorderheader.creditcardid = dim_creditcard.creditcardid)
         left join dim_status_sales on (salesorderheader.salesorderid = dim_status_sales.salesorderid)
 
@@ -82,7 +82,6 @@ with
             , salesorderdetail_with_sk.dim_product_fk
             , salesorderdetail_with_sk.specialofferid					
             /* sales order detail */
-            , salesorderdetail_with_sk.carriertrackingnumber
             , salesorderdetail_with_sk.orderqty
             , salesorderdetail_with_sk.unitprice
             , salesorderdetail_with_sk.unitpricediscount	

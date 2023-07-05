@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: dim_salesreason
+    description: Dimension table containing sales reason information.
+    columns:
+      - name: dim_salesreason_sk
+        description: Surrogate key generated using salesreasonid, salesorderid, and modifieddate.
+        tests:
+          - not_null
+          - unique
+
+      - name: salesorderid
+        description: Sales order identifier.
+
+      - name: salesreasonid
+        description: Sales reason identifier.
+
+      - name: name_salesreason
+        description: Name of the sales reason.
+
+      - name: reasontype
+        description: Type of sales reason.
