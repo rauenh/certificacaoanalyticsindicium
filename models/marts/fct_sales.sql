@@ -52,6 +52,7 @@ with
         left join dim_territories on (salesorderheader.territoryid = dim_territories.territoryid)
         left join dim_creditcard on (salesorderheader.creditcardid = dim_creditcard.creditcardid)
         left join dim_status_sales on (salesorderheader.salesorderid = dim_status_sales.salesorderid)
+        order by salesorderheader.salesorderid asc
 
     ),
     salesorderdetail_with_sk as (
@@ -71,6 +72,8 @@ with
 	        , (salesorderdetail.unitprice * salesorderdetail.orderqty) * (1-salesorderdetail.unitpricediscount) as net_value
         from {{ref('stg_raw_salesorderdetail')}} as salesorderdetail
         left join dim_products on (salesorderdetail.productid = dim_products.productid)
+        order by salesordetail.salesorderid asc
+
     ),
     join_salesorderheader_salesorderdetail_with_sk as (
         select
@@ -103,6 +106,15 @@ with
 	        , salesorderdetail_with_sk.net_value
         from salesorderheader_with_sk
         left join salesorderdetail_with_sk on (salesorderheader_with_sk.salesorderid = salesorderdetail_with_sk.salesorderid)
+        order by salesorderheader_with_sk.salesorderid asc
+
+    ),
+    join_salesorderheader_salesorderdetail_with_sk_remove_duplicates as (
+        select
+            *,
+            row_number() over (partition by salesorderid order by salesorderid) as remove_duplicates_index,
+        from join_salesorderheader_salesorderdetail_with_sk
     )
 select *
-from join_salesorderheader_salesorderdetail_with_sk
+from join_salesorderheader_salesorderdetail_with_sk_remove_duplicates
+
