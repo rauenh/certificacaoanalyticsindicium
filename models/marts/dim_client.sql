@@ -30,7 +30,7 @@ with
     ),
     join_dim_client as (
         select
-            {{ dbt_utils.generate_surrogate_key(['person.businessentityid']) }} as dim_client_sk
+            {{ dbt_utils.generate_surrogate_key(['customer.customerid']) }} as dim_client_sk
             , customer.customerid
             , customer.personid
             , COALESCE(customer.storeid, 0) as storeid

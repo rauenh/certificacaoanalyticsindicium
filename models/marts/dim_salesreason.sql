@@ -18,21 +18,28 @@ with
     ),
     join_dim_salesreason as (
         select
-            {{ dbt_utils.generate_surrogate_key(['salesreason.salesreasonid', 'salesorderheadersalesreason.salesreasonid']) }} as dim_salesreason_sk
-            , salesorderheadersalesreason.salesorderid
-            , salesorderheadersalesreason.salesreasonid
+             salesorderheadersalesreason.salesreasonid
             , salesreason.name_salesreason
             , salesreason.reasontype
+            , row_number() over (partition by salesorderheadersalesreason.salesreasonid order by salesorderheadersalesreason.salesreasonid
+) as remove_duplicates_index
+
             from salesorderheadersalesreason
             left join salesreason on (salesorderheadersalesreason.salesreasonid = salesreason.salesreasonid)
-            order by salesorderheadersalesreason.salesorderid asc
+        union all
+        select
+            null as salesreasonid
+            , null as name_salesreason
+            , null as reasontype
+            , 1 as remove_duplicates_index
     ),
     join_dim_salesreason_remove_duplicates as (
         select
-            *,
-            row_number() over (partition by salesreasonid order by salesreasonid) as remove_duplicates_index,
+            *
+            , {{ dbt_utils.generate_surrogate_key(['salesreasonid']) }} as dim_salesreason_sk
         from join_dim_salesreason
+        where remove_duplicates_index = 1
+
     )
     select *
     from join_dim_salesreason_remove_duplicates
-    where remove_duplicates_index = 1 

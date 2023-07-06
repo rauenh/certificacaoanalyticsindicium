@@ -14,7 +14,14 @@ with
             , currencyrateid				
             , shipmethodid					
             /* Order information for customer*/
-            , status
+            , case 
+                when status = 1 then 'In Process'
+                when status = 2 then 'Approved'
+                when status = 3 then 'Backordered'
+                when status = 4 then 'Rejected'
+                when status = 5 then 'Shipped'
+                when status = 6 then 'Cancelled'
+            end as status
             , purchaseordernumber
             , creditcardapprovalcode					
             , accountnumber					
@@ -44,21 +51,32 @@ with
             , unitpricediscount
         from {{ref('stg_raw_salesorderdetail')}}
     ),
-  
-    join_salesorderheader_salesorderdetail as (
+    salesorderheadersalesreason as (
         select
-            {{ dbt_utils.generate_surrogate_key(['salesorderheader.salesorderid', 'salesorderdetail.salesorderdetailid']) }} as int_sales_sk
-            /*PK from salesorderheader*/
+            /* Primary Key & FK*/
+            salesreasonid
+            , salesorderid
+        from {{ref('stg_raw_salesorderheadersalesreason')}}
+    ),
+  
+    join_salesorderheader_salesorderdetail_salesreason as (
+        select
+            {{ dbt_utils.generate_surrogate_key(['salesorderheader.salesorderid']) }} as int_sales_sk
+            /*PK from salesorderheader, salesorderdetail ad salesorderheadersalesreason*/
             , salesorderheader.salesorderid
             , salesorderheader.count_salesorderid
+            , salesorderheadersalesreason.salesreasonid
             /*FK from salesorderheader*/
             , salesorderheader.customerid
             , salesorderheader.shiptoaddressid
             , salesorderheader.territoryid
             , salesorderheader.creditcardid		
-            , salesorderheader.salespersonid		
-            , salesorderheader.status
+            , salesorderheader.salespersonid	
+            , salesorderdetail.salesorderdetailid
+            , salesorderdetail.productid
+            , salesorderdetail.specialofferid	
             /*Order pricing*/
+            , salesorderheader.status
             , salesorderheader.subtotal
             , salesorderheader.taxamt					
             , salesorderheader.freight		
@@ -68,10 +86,6 @@ with
             , (salesorderheader.freight/ count(*) over (partition by salesorderheader.salesorderid)) as freight_per_order
             , (salesorderheader.totaldue/ count(*) over (partition by salesorderheader.salesorderid)) as totaldue_per_order
 	        , salesorderheader.orderdate	
-            /*Foreign Key from salesorderdetail */
-            , salesorderdetail.salesorderdetailid
-            , salesorderdetail.productid
-            , salesorderdetail.specialofferid					
             /* sales order detail */
             , salesorderdetail.orderqty
             , salesorderdetail.unitprice
@@ -80,15 +94,16 @@ with
             , (salesorderdetail.unitprice * salesorderdetail.orderqty) as gross_value
 	        , ((salesorderdetail.unitprice * salesorderdetail.orderqty) * (1-salesorderdetail.unitpricediscount)) as net_value
 
-        from salesorderheader
-        left join salesorderdetail on (salesorderheader.salesorderid = salesorderdetail.salesorderid)
+        from salesorderdetail
+        left join salesorderheader on (salesorderdetail.salesorderid = salesorderheader.salesorderid)
+        left join salesorderheadersalesreason on (salesorderheader.salesorderid = salesorderheadersalesreason.salesorderid)
         order by salesorderheader.salesorderid asc
     ),
     join_int_sales_remove_duplicates as (
         select
             *,
             row_number() over (partition by salesorderid order by salesorderid) as remove_duplicates_index,
-        from join_salesorderheader_salesorderdetail
+        from join_salesorderheader_salesorderdetail_salesreason
     )
 select *
 from join_int_sales_remove_duplicates
