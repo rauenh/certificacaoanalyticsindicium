@@ -1,15 +1,4 @@
 with
-    salesorderheader as (
-        select
-            /*PK*/
-            salesorderid
-            /*FK*/
-            , customerid		
-            , salespersonid	
-            , territoryid	
-            , shiptoaddressid	
-        from {{ref('stg_raw_salesorderheader')}}
-    ),
     address as (
         select
             /* Primary Key*/
@@ -18,8 +7,6 @@ with
             , stateprovinceid
             /* Other infos*/
             , city
-            , postalcode
-            , spatiallocation
         from {{ref('stg_raw_address')}}
     ),
     stateprovince as (
@@ -31,33 +18,40 @@ with
             , stateprovincecode
             , countryregioncode
             , name_state_province
-            , rowguid
         from {{ref('stg_raw_stateprovince')}}
+    ),
+    salesterritory as (
+        select
+            /* Primary Key*/
+            territoryid
+            /*FK*/
+            , countryregioncode
+            /*Sales by territory*/
+            , name_salesterritory
+            , `group`
+            , salesytd
+            , saleslastyear
+            , costytd
+            , costlastyear
+        from {{ref('stg_raw_salesterritory')}}
     ),
     join_dim_territories as (
         select
-            {{ dbt_utils.generate_surrogate_key(['salesorderid', 'shiptoaddressid', 'customerid']) }} as dim_territories_sk
-            , salesorderheader.salesorderid
-            , salesorderheader.customerid		
-            , salesorderheader.salespersonid	
-            , salesorderheader.territoryid	
-            , salesorderheader.shiptoaddressid
+            {{ dbt_utils.generate_surrogate_key(['addressid']) }} as dim_territories_sk
+            , address.addressid
             , address.stateprovinceid
-            , address.spatiallocation
             , stateprovince.countryregioncode
             , stateprovince.stateprovincecode
-            , address.city
-            , address.postalcode
             , stateprovince.name_state_province
-            from salesorderheader
-            left join address on (salesorderheader.shiptoaddressid = address.addressid)
-                left join stateprovince on (address.stateprovinceid = stateprovince.stateprovinceid)
-            order by salesorderheader.salesorderid asc
+            , address.city
+            from address
+            left join stateprovince on (address.stateprovinceid = stateprovince.stateprovinceid)
+                left join salesterritory on (stateprovince.territoryid = salesterritory.territoryid)
     ),
     join_dim_territories_remove_duplicates as (
         select
             *,
-            row_number() over (partition by salesorderid order by salesorderid) as remove_duplicates_index,
+            row_number() over (partition by addressid order by addressid) as remove_duplicates_index,
         from join_dim_territories
     )
     select *

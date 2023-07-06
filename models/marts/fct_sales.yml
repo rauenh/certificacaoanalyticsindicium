@@ -37,12 +37,8 @@ models:
               to: ref('dim_creditcard')
               field: dim_creditcard_sk
 
-      - name: dim_status_sales_fk
-        description: Foreign key referencing the sales status dimension table.
-        tests:
-          - relationships:
-              to: ref('dim_status_sales')
-              field: dim_status_sales_sk
+      - name: status
+        description: 'sales status'
 
       - name: subtotal
         description: Subtotal of the sales order.

@@ -21,7 +21,7 @@ with
     ),
     join_dim_creditcard as (
         select
-            {{ dbt_utils.generate_surrogate_key(['salesorderid', 'salesorderheader.creditcardid', 'rowguid']) }} as dim_creditcard_sk
+            {{ dbt_utils.generate_surrogate_key(['salesorderheader.creditcardid']) }} as dim_creditcard_sk
             , salesorderheader.salesorderid
             , salesorderheader.customerid
             , salesorderheader.salespersonid
@@ -34,7 +34,7 @@ with
     join_dim_creditcard_remove_duplicates as (
         select
             *,
-            row_number() over (partition by salesorderid order by salesorderid) as remove_duplicates_index,
+            row_number() over (partition by creditcardid order by creditcardid) as remove_duplicates_index,
         from join_dim_creditcard
     )
     select *

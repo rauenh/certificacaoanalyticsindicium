@@ -11,23 +11,34 @@ with
             , rowguid				
         from {{ref('stg_raw_product')}}
     ),
+    productcategory as (
+        select
+            /* Primary Key */
+            productcategoryid
+            /* Product Caracteristics*/
+            , name_productcategory
+        from {{ref('stg_raw_productcategory')}}
+    ),
     productsubcategory as (
         select
             /* Primary Key */
             productsubcategoryid
+            /* FK*/
+            , productcategoryid	
             /* Product Caracteristics*/
             , name_productsubcategory
         from {{ref('stg_raw_productsubcategory')}}
     ),
     join_dim_product as (
         select
-            {{ dbt_utils.generate_surrogate_key(['productid', 'product.productsubcategoryid', 'rowguid']) }} as dim_product_sk
+            {{ dbt_utils.generate_surrogate_key(['productid']) }} as dim_product_sk
             , product.productid
             , COALESCE(product.productsubcategoryid, 0) as productsubcategoryid
             , product.name_product
             , COALESCE(productsubcategory.name_productsubcategory, 'not informed') as name_productsubcategory
             from product
             left join productsubcategory on (product.productsubcategoryid = productsubcategory.productsubcategoryid)
+                left join productcategory on (productsubcategory.productcategoryid = productcategory.productcategoryid)
             order by product.productid asc
     ),
     join_dim_product_remove_duplicates as (

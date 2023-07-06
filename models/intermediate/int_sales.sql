@@ -3,6 +3,7 @@ with
         select
             /*PK*/
             salesorderid
+            , count(*) over (partition by salesorderid) as count_salesorderid
             /*FK*/
             , customerid		
             , salespersonid	
@@ -26,7 +27,6 @@ with
             , taxamt					
             , freight		
             , totaldue					
-
         from {{ref('stg_raw_salesorderheader')}}
     ),
     salesorderdetail as (
@@ -42,23 +42,22 @@ with
             , orderqty
             , unitprice
             , unitpricediscount
-            , rowguid
-            , modifieddate
-
         from {{ref('stg_raw_salesorderdetail')}}
     ),
-    
+  
     join_salesorderheader_salesorderdetail as (
         select
-            {{ dbt_utils.generate_surrogate_key(['salesorderheader.salesorderid', 'salesorderheader.purchaseordernumber', 'salesorderdetail.rowguid']) }} as int_sales_sk
+            {{ dbt_utils.generate_surrogate_key(['salesorderheader.salesorderid', 'salesorderdetail.salesorderdetailid']) }} as int_sales_sk
             /*PK from salesorderheader*/
             , salesorderheader.salesorderid
+            , salesorderheader.count_salesorderid
             /*FK from salesorderheader*/
             , salesorderheader.customerid
             , salesorderheader.shiptoaddressid
             , salesorderheader.territoryid
             , salesorderheader.creditcardid		
             , salesorderheader.salespersonid		
+            , salesorderheader.status
             /*Order pricing*/
             , salesorderheader.subtotal
             , salesorderheader.taxamt					
@@ -68,8 +67,9 @@ with
             , (salesorderheader.taxamt/ count(*) over (partition by salesorderheader.salesorderid)) as tax_per_order
             , (salesorderheader.freight/ count(*) over (partition by salesorderheader.salesorderid)) as freight_per_order
             , (salesorderheader.totaldue/ count(*) over (partition by salesorderheader.salesorderid)) as totaldue_per_order
-	        , salesorderheader.orderdate			
+	        , salesorderheader.orderdate	
             /*Foreign Key from salesorderdetail */
+            , salesorderdetail.salesorderdetailid
             , salesorderdetail.productid
             , salesorderdetail.specialofferid					
             /* sales order detail */

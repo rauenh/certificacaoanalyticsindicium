@@ -15,10 +15,7 @@ with
             businessentityid
             /* Other information*/
             , persontype
-            , firstname
-            , lastname
-            , demographics
-            , rowguid
+            , concat(firstname ,' ',lastname) as complete_name
         from {{ref('stg_raw_person')}}
     ),
     store as (
@@ -33,7 +30,7 @@ with
     ),
     join_dim_client as (
         select
-            {{ dbt_utils.generate_surrogate_key(['customerid', 'personid', 'rowguid']) }} as dim_client_sk
+            {{ dbt_utils.generate_surrogate_key(['person.businessentityid']) }} as dim_client_sk
             , customer.customerid
             , customer.personid
             , COALESCE(customer.storeid, 0) as storeid
@@ -47,9 +44,7 @@ with
                 when person.persontype = 'VC' then 'Vendor'
                 when person.persontype = 'GC' then 'General Contact'
             end as persontype
-            , person.firstname
-            , person.lastname
-            , person.demographics
+            , person.complete_name
             from customer
             left join person on (customer.personid = person.businessentityid)
             left join store on (customer.storeid = store.businessentityid)
@@ -62,10 +57,8 @@ with
             row_number() over (partition by customerid order by customerid) as remove_duplicates_index,
         from join_dim_client
     )
-    select *
-    from join_dim_client_remove_duplicates
-    where remove_duplicates_index = 1 
-    /*select *
-    from join_dim_client
-    where personid is not null*/
+select *
+from join_dim_client_remove_duplicates
+where remove_duplicates_index = 1 
+
 
