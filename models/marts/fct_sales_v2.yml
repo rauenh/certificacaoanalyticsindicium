@@ -1,18 +1,17 @@
 version: 2
 
 models:
-  - name: fct_sales
+  - name: fct_sales_v2
     description: Fact table containing sales information.
     columns:
-      - name: int_sales_fk
-        description: Foreign key referencing the internal sales table.
-        tests:
-          - relationships:
-              to: ref('int_sales')
-              field: int_sales_sk
-
-      - name: salesorderid
+      - name: sale_identifier_sk
         description: Unique identifier for each row on the fact table.
+        tests:
+          - not_null
+          - unique
+
+      - name: sales_order_fk
+        description: Unique identifier for each sales order on the fact table.
         tests:
           - not_null
 
@@ -83,8 +82,17 @@ models:
       - name: unitpricediscount
         description: Discount for the unit price in the sales order.
 
-      - name: gross_value
-        description: Gross value of the sales order detail.
+      - name: sub_total_fixed
+        description: Subtotal proportional of order_detail_id.
 
-      - name: net_value
-        description: Net value of the sales order detail.
+      - name: total_gross
+        description: Total gross proportional of order_detail_id.
+
+      - name: tax_amount_fixed
+        description: Tax amount proportional of order_detail_id.
+
+      - name: freight_fixed
+        description: Freight proportional of order_detail_id.
+
+      - name: total_due_fixed
+        description: Total due proportional of order_detail_id.

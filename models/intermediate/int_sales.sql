@@ -75,6 +75,8 @@ with
             , salesorderdetail.salesorderdetailid
             , salesorderdetail.productid
             , salesorderdetail.specialofferid	
+   	        , salesorderheader.orderdate	
+
             /*Order pricing*/
             , salesorderheader.status
             , salesorderheader.subtotal
@@ -82,17 +84,16 @@ with
             , salesorderheader.freight		
             , salesorderheader.totaldue
             /* Create Business Rule*/
-            , (salesorderheader.taxamt/ count(*) over (partition by salesorderheader.salesorderid)) as tax_per_order
-            , (salesorderheader.freight/ count(*) over (partition by salesorderheader.salesorderid)) as freight_per_order
-            , (salesorderheader.totaldue/ count(*) over (partition by salesorderheader.salesorderid)) as totaldue_per_order
-	        , salesorderheader.orderdate	
+            , (salesorderheader.taxamt/ count(salesorderheader.taxamt) over (partition by salesorderheader.salesorderid)) as tax_per_order
+            , (salesorderheader.freight/ count(salesorderheader.freight) over (partition by salesorderheader.salesorderid)) as freight_per_order
+            , (salesorderheader.totaldue/ count(salesorderheader.totaldue) over (partition by salesorderheader.salesorderid)) as totaldue_per_order
+            , (salesorderdetail.unitprice * salesorderdetail.orderqty) as gross_value
+	        , (salesorderdetail.unitprice * salesorderdetail.orderqty) * (1 - salesorderdetail.unitpricediscount) as net_value
+            , ((salesorderdetail.unitprice * salesorderdetail.orderqty) * (1 - salesorderdetail.unitpricediscount)) / salesorderdetail.orderqty as average_ticket
             /* sales order detail */
             , salesorderdetail.orderqty
             , salesorderdetail.unitprice
             , salesorderdetail.unitpricediscount
-            /* Create Business rule*/
-            , (salesorderdetail.unitprice * salesorderdetail.orderqty) as gross_value
-	        , ((salesorderdetail.unitprice * salesorderdetail.orderqty) * (1-salesorderdetail.unitpricediscount)) as net_value
 
         from salesorderdetail
         left join salesorderheader on (salesorderdetail.salesorderid = salesorderheader.salesorderid)

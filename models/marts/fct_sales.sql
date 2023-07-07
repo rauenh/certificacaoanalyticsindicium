@@ -26,6 +26,7 @@ with
             , int_sales.totaldue_per_order
             , int_sales.gross_value
 	        , int_sales.net_value
+            , int_sales.average_ticket
 	        , int_sales.orderdate			
             /*Foreign Key from salesorderdetail */
             ,{{ dbt_utils.generate_surrogate_key(['productid']) }} as dim_product_fk

@@ -13,7 +13,6 @@ with
             /*Other information*/
             , name_salesreason
             , reasontype
-            , modifieddate
         from {{ref('stg_raw_salesreason')}}
     ),
     join_dim_salesreason as (
@@ -21,8 +20,7 @@ with
              salesorderheadersalesreason.salesreasonid
             , salesreason.name_salesreason
             , salesreason.reasontype
-            , row_number() over (partition by salesorderheadersalesreason.salesreasonid order by salesorderheadersalesreason.salesreasonid
-) as remove_duplicates_index
+            , row_number() over (partition by salesorderheadersalesreason.salesreasonid order by salesorderheadersalesreason.salesreasonid) as remove_duplicates_index
 
             from salesorderheadersalesreason
             left join salesreason on (salesorderheadersalesreason.salesreasonid = salesreason.salesreasonid)
