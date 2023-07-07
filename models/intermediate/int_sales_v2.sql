@@ -57,20 +57,15 @@ with
             , salesorderid
         from {{ref('stg_raw_salesorderheadersalesreason')}}
     ),
-    salesreason as (
-        select
-            /* Primary Key*/
-            salesreasonid
-            /*Other information*/
-            , name_salesreason
-            , reasontype
-
-        from {{ref('stg_raw_salesreason')}}
-    ), 
      creditcard as (
 	    select * 
 	    from {{ ref('stg_raw_creditcard') }}	
     ),
+    int_reason as (
+        select *
+        from {{ref('int_reason')}}
+    ),
+
     union_credit_card as (
 	    select 
 	    	salesorderheader.*
@@ -157,11 +152,10 @@ with
 , union_reason as (
 	select
 		fixed_table.*
-        , salesreasonid
 		, reasontype
 		from fixed_table
-		left join salesreason
-			on salesreason.salesreasonid = fixed_table.salesorderid
+		left join int_reason on int_reason.salesorderid = fixed_table.salesorderid
+        
 )
 
 select * 

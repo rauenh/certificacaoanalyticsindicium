@@ -28,27 +28,27 @@ with
             /* Product Caracteristics*/
             , name_productsubcategory
         from {{ref('stg_raw_productsubcategory')}}
+    )
+    ,
+    remove_duplicates as (
+        select
+            *,
+            row_number() over (partition by productid order by productid) as remove_duplicates_index,
+        from product
     ),
     join_dim_product as (
         select
             {{ dbt_utils.generate_surrogate_key(['productid']) }} as dim_product_sk
-            , product.productid
-            , COALESCE(product.productsubcategoryid, 0) as productsubcategoryid
-            , product.name_product
+            , COALESCE(remove_duplicates.productsubcategoryid, 0) as productsubcategoryid
+            , remove_duplicates.name_product
             , productcategory.name_productcategory
             , COALESCE(productsubcategory.name_productsubcategory, 'not informed') as name_productsubcategory
-            from product
-            left join productsubcategory on (product.productsubcategoryid = productsubcategory.productsubcategoryid)
-                left join productcategory on (productsubcategory.productcategoryid = productcategory.productcategoryid)
-            order by product.productid asc
-    ),
-    join_dim_product_remove_duplicates as (
-        select
-            *,
-            row_number() over (partition by productid order by productid) as remove_duplicates_index,
-        from join_dim_product
+            from remove_duplicates
+            left join productsubcategory on (remove_duplicates.productsubcategoryid = productsubcategory.productsubcategoryid)
+            left join productcategory on (productsubcategory.productcategoryid = productcategory.productcategoryid)
+            where remove_duplicates_index = 1 
+
     )
     select *
-    from join_dim_product_remove_duplicates
-    where remove_duplicates_index = 1 
+    from join_dim_product
 

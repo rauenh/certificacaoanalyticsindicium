@@ -18,7 +18,7 @@ with int_sales as (
         , {{ dbt_utils.generate_surrogate_key(['customerid']) }} as dim_client_fk
         , {{ dbt_utils.generate_surrogate_key(['shiptoaddressid']) }} as dim_territories_fk
         , {{ dbt_utils.generate_surrogate_key(['creditcardid']) }} as dim_creditcard_fk
-        , {{ dbt_utils.generate_surrogate_key(['salesreasonid']) }} as dim_salesreason_fk
+        , {{ dbt_utils.generate_surrogate_key(['reasontype']) }} as dim_salesreason_fk
         , orderdate
         , online_order
         , carriertrackingnumber
