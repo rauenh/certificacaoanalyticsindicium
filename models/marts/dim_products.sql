@@ -35,6 +35,7 @@ with
             , product.productid
             , COALESCE(product.productsubcategoryid, 0) as productsubcategoryid
             , product.name_product
+            , productcategory.name_productcategory
             , COALESCE(productsubcategory.name_productsubcategory, 'not informed') as name_productsubcategory
             from product
             left join productsubcategory on (product.productsubcategoryid = productsubcategory.productsubcategoryid)
