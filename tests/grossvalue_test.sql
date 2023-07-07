@@ -6,8 +6,8 @@
 
 with    
     sales_2011 as (
-        select sum(gross_value) as total_sales
-        from {{ ref('fact_sales') }}
+        select sum(total_gross) as total_sales
+        from {{ ref('fct_sales_v2') }}
         where orderdate between '2011-01-01' and '2011-12-31'
     )
 
