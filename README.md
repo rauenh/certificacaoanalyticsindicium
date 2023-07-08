@@ -1,4 +1,5 @@
-Welcome to your new dbt project!
+This is a repository created for the Analytics Engineering certification by Indicium Academy and Lighthouse Program. In this project we have to create a conceptual model (Kimball's Star Schema) based on AdventureWorks ERP Model, create a DW (using Google Big Query) and modeling the tables using DBT Core. Then, a data vizualization was created using PowerBi, aiming to answer some core business questions. 
+
 
 ### Using the starter project
 - Install the virtualenv with `python -m venv /path/to/new/virtual/environment`
