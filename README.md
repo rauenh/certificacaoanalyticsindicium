@@ -1,7 +1,12 @@
 Welcome to your new dbt project!
 
 ### Using the starter project
-
+- Install the virtualenv with `python -m venv /path/to/new/virtual/environment`
+- Activate the venv
+- Run `pip install dbt-core`
+- Install `pip install dbt-bigquery`
+- Run `dbt deps`
+  
 Try running the following commands:
 - dbt run
 - dbt test
